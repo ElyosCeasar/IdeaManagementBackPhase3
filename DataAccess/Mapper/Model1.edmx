@@ -1,0 +1,669 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="IdeaManagmentDatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="COMMENT_POINTS">
+          <Key>
+            <PropertyRef Name="USERNAME" />
+            <PropertyRef Name="COMMENT_ID" />
+          </Key>
+          <Property Name="USERNAME" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="COMMENT_ID" Type="int" Nullable="false" />
+          <Property Name="POINT" Type="int" Nullable="false" />
+          <Property Name="SAVE_DATE" Type="datetime" Nullable="false" />
+          <Property Name="MODIFY_DATE" Type="datetime" />
+        </EntityType>
+        <EntityType Name="COMMITTEE_VOTE_DETAIL">
+          <Key>
+            <PropertyRef Name="IDEAS_ID" />
+          </Key>
+          <Property Name="IDEAS_ID" Type="int" Nullable="false" />
+          <Property Name="COMMITTEE_MEMBER" Type="varchar" MaxLength="50" />
+          <Property Name="PROFIT_AMOUNT" Type="bigint" />
+          <Property Name="SAVING_RESOURCE_AMOUNT" Type="bigint" />
+          <Property Name="SAVE_DATE" Type="datetime" />
+        </EntityType>
+        <EntityType Name="IDEA_COMMENTS">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="USERNAME" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="IDEA_ID" Type="int" Nullable="false" />
+          <Property Name="COMMENT" Type="nvarchar" MaxLength="2000" Nullable="false" />
+          <Property Name="SAVE_DATE" Type="datetime" Nullable="false" />
+          <Property Name="MODIFY_DATE" Type="datetime" />
+        </EntityType>
+        <EntityType Name="IDEA_POINTS">
+          <Key>
+            <PropertyRef Name="USERNAME" />
+            <PropertyRef Name="IDEA_ID" />
+          </Key>
+          <Property Name="USERNAME" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="IDEA_ID" Type="int" Nullable="false" />
+          <Property Name="POINT" Type="int" Nullable="false" />
+          <Property Name="SAVE_DATE" Type="datetime" Nullable="false" />
+          <Property Name="MODIFY_DATE" Type="datetime" />
+        </EntityType>
+        <EntityType Name="IDEA_STATUS">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="tinyint" Nullable="false" />
+          <Property Name="TITLE" Type="nvarchar" MaxLength="30" />
+        </EntityType>
+        <EntityType Name="IDEAS">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="USERNAME" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="STATUS_ID" Type="tinyint" Nullable="false" />
+          <Property Name="TITLE" Type="nvarchar" MaxLength="1000" Nullable="false" />
+          <Property Name="CURRENT_SITUATION" Type="nvarchar" MaxLength="2000" Nullable="false" />
+          <Property Name="PREREQUISITE" Type="nvarchar" MaxLength="2000" Nullable="false" />
+          <Property Name="STEPS" Type="nvarchar" MaxLength="2000" Nullable="false" />
+          <Property Name="ADVANTAGES" Type="nvarchar" MaxLength="2000" Nullable="false" />
+          <Property Name="SAVE_DATE" Type="datetime" Nullable="false" />
+          <Property Name="MODIFY_DATE" Type="datetime" />
+        </EntityType>
+        <EntityType Name="SELECTED_IDEA">
+          <Key>
+            <PropertyRef Name="IDEA_ID" />
+          </Key>
+          <Property Name="IDEA_ID" Type="int" Nullable="false" />
+          <Property Name="YEAR" Type="int" Nullable="false" />
+          <Property Name="MONTH" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="USERS">
+          <Key>
+            <PropertyRef Name="USERNAME" />
+          </Key>
+          <Property Name="USERNAME" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="COMMITTEE_FLAG" Type="bit" Nullable="false" />
+          <Property Name="ADMIN_FLAG" Type="bit" Nullable="false" />
+          <Property Name="EMAIL" Type="nvarchar(max)" />
+          <Property Name="FIRST_NAME" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="LAST_NAME" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="PASSWORD" Type="nvarchar" MaxLength="20" />
+          <Property Name="SAVE_DATE" Type="datetime" Nullable="false" />
+          <Property Name="MODIFY_DATE" Type="datetime" />
+        </EntityType>
+        <Association Name="FK_COMMENT_POINTS_USERS">
+          <End Role="USERS" Type="Self.USERS" Multiplicity="1" />
+          <End Role="COMMENT_POINTS" Type="Self.COMMENT_POINTS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USERS">
+              <PropertyRef Name="USERNAME" />
+            </Principal>
+            <Dependent Role="COMMENT_POINTS">
+              <PropertyRef Name="USERNAME" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_COMMITTE_IDEAS">
+          <End Role="IDEAS" Type="Self.IDEAS" Multiplicity="1" />
+          <End Role="COMMITTEE_VOTE_DETAIL" Type="Self.COMMITTEE_VOTE_DETAIL" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="IDEAS">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="COMMITTEE_VOTE_DETAIL">
+              <PropertyRef Name="IDEAS_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_COMMITTE_USERS">
+          <End Role="USERS" Type="Self.USERS" Multiplicity="0..1" />
+          <End Role="COMMITTEE_VOTE_DETAIL" Type="Self.COMMITTEE_VOTE_DETAIL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USERS">
+              <PropertyRef Name="USERNAME" />
+            </Principal>
+            <Dependent Role="COMMITTEE_VOTE_DETAIL">
+              <PropertyRef Name="COMMITTEE_MEMBER" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_IDEA_COMMENTS_IDEAS">
+          <End Role="IDEAS" Type="Self.IDEAS" Multiplicity="1" />
+          <End Role="IDEA_COMMENTS" Type="Self.IDEA_COMMENTS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="IDEAS">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="IDEA_COMMENTS">
+              <PropertyRef Name="IDEA_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_IDEA_COMMENTS_USERS">
+          <End Role="USERS" Type="Self.USERS" Multiplicity="1" />
+          <End Role="IDEA_COMMENTS" Type="Self.IDEA_COMMENTS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USERS">
+              <PropertyRef Name="USERNAME" />
+            </Principal>
+            <Dependent Role="IDEA_COMMENTS">
+              <PropertyRef Name="USERNAME" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_IDEA_POINTS_IDEAS">
+          <End Role="IDEAS" Type="Self.IDEAS" Multiplicity="1" />
+          <End Role="IDEA_POINTS" Type="Self.IDEA_POINTS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="IDEAS">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="IDEA_POINTS">
+              <PropertyRef Name="IDEA_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_IDEA_POINTS_USERS">
+          <End Role="USERS" Type="Self.USERS" Multiplicity="1" />
+          <End Role="IDEA_POINTS" Type="Self.IDEA_POINTS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USERS">
+              <PropertyRef Name="USERNAME" />
+            </Principal>
+            <Dependent Role="IDEA_POINTS">
+              <PropertyRef Name="USERNAME" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_IDEAS_REFERENCE_IDEA_STA">
+          <End Role="IDEA_STATUS" Type="Self.IDEA_STATUS" Multiplicity="1" />
+          <End Role="IDEAS" Type="Self.IDEAS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="IDEA_STATUS">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="IDEAS">
+              <PropertyRef Name="STATUS_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_IDEAS_USERS">
+          <End Role="USERS" Type="Self.USERS" Multiplicity="1" />
+          <End Role="IDEAS" Type="Self.IDEAS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USERS">
+              <PropertyRef Name="USERNAME" />
+            </Principal>
+            <Dependent Role="IDEAS">
+              <PropertyRef Name="USERNAME" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SELECTED_IDEA_IDEAS">
+          <End Role="IDEAS" Type="Self.IDEAS" Multiplicity="1" />
+          <End Role="SELECTED_IDEA" Type="Self.SELECTED_IDEA" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="IDEAS">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SELECTED_IDEA">
+              <PropertyRef Name="IDEA_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="IdeaManagmentDatabaseModelStoreContainer">
+          <EntitySet Name="COMMENT_POINTS" EntityType="Self.COMMENT_POINTS" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="COMMITTEE_VOTE_DETAIL" EntityType="Self.COMMITTEE_VOTE_DETAIL" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="IDEA_COMMENTS" EntityType="Self.IDEA_COMMENTS" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="IDEA_POINTS" EntityType="Self.IDEA_POINTS" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="IDEA_STATUS" EntityType="Self.IDEA_STATUS" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="IDEAS" EntityType="Self.IDEAS" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SELECTED_IDEA" EntityType="Self.SELECTED_IDEA" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="USERS" EntityType="Self.USERS" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_COMMENT_POINTS_USERS" Association="Self.FK_COMMENT_POINTS_USERS">
+            <End Role="USERS" EntitySet="USERS" />
+            <End Role="COMMENT_POINTS" EntitySet="COMMENT_POINTS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_COMMITTE_IDEAS" Association="Self.FK_COMMITTE_IDEAS">
+            <End Role="IDEAS" EntitySet="IDEAS" />
+            <End Role="COMMITTEE_VOTE_DETAIL" EntitySet="COMMITTEE_VOTE_DETAIL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_COMMITTE_USERS" Association="Self.FK_COMMITTE_USERS">
+            <End Role="USERS" EntitySet="USERS" />
+            <End Role="COMMITTEE_VOTE_DETAIL" EntitySet="COMMITTEE_VOTE_DETAIL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_IDEA_COMMENTS_IDEAS" Association="Self.FK_IDEA_COMMENTS_IDEAS">
+            <End Role="IDEAS" EntitySet="IDEAS" />
+            <End Role="IDEA_COMMENTS" EntitySet="IDEA_COMMENTS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_IDEA_COMMENTS_USERS" Association="Self.FK_IDEA_COMMENTS_USERS">
+            <End Role="USERS" EntitySet="USERS" />
+            <End Role="IDEA_COMMENTS" EntitySet="IDEA_COMMENTS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_IDEA_POINTS_IDEAS" Association="Self.FK_IDEA_POINTS_IDEAS">
+            <End Role="IDEAS" EntitySet="IDEAS" />
+            <End Role="IDEA_POINTS" EntitySet="IDEA_POINTS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_IDEA_POINTS_USERS" Association="Self.FK_IDEA_POINTS_USERS">
+            <End Role="USERS" EntitySet="USERS" />
+            <End Role="IDEA_POINTS" EntitySet="IDEA_POINTS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_IDEAS_REFERENCE_IDEA_STA" Association="Self.FK_IDEAS_REFERENCE_IDEA_STA">
+            <End Role="IDEA_STATUS" EntitySet="IDEA_STATUS" />
+            <End Role="IDEAS" EntitySet="IDEAS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_IDEAS_USERS" Association="Self.FK_IDEAS_USERS">
+            <End Role="USERS" EntitySet="USERS" />
+            <End Role="IDEAS" EntitySet="IDEAS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SELECTED_IDEA_IDEAS" Association="Self.FK_SELECTED_IDEA_IDEAS">
+            <End Role="IDEAS" EntitySet="IDEAS" />
+            <End Role="SELECTED_IDEA" EntitySet="SELECTED_IDEA" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="IdeaManagmentDatabaseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="COMMENT_POINTS">
+          <Key>
+            <PropertyRef Name="USERNAME" />
+            <PropertyRef Name="COMMENT_ID" />
+          </Key>
+          <Property Name="USERNAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="COMMENT_ID" Type="Int32" Nullable="false" />
+          <Property Name="POINT" Type="Int32" Nullable="false" />
+          <Property Name="SAVE_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="MODIFY_DATE" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="USER" Relationship="Self.FK_COMMENT_POINTS_USERS" FromRole="COMMENT_POINTS" ToRole="USERS" />
+        </EntityType>
+        <EntityType Name="COMMITTEE_VOTE_DETAIL">
+          <Key>
+            <PropertyRef Name="IDEAS_ID" />
+          </Key>
+          <Property Name="IDEAS_ID" Type="Int32" Nullable="false" />
+          <Property Name="COMMITTEE_MEMBER" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="PROFIT_AMOUNT" Type="Int64" />
+          <Property Name="SAVING_RESOURCE_AMOUNT" Type="Int64" />
+          <Property Name="SAVE_DATE" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="IDEA" Relationship="Self.FK_COMMITTE_IDEAS" FromRole="COMMITTEE_VOTE_DETAIL" ToRole="IDEAS" />
+          <NavigationProperty Name="USER" Relationship="Self.FK_COMMITTE_USERS" FromRole="COMMITTEE_VOTE_DETAIL" ToRole="USERS" />
+        </EntityType>
+        <EntityType Name="IDEA_COMMENTS">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="USERNAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="IDEA_ID" Type="Int32" Nullable="false" />
+          <Property Name="COMMENT" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="SAVE_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="MODIFY_DATE" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="IDEA" Relationship="Self.FK_IDEA_COMMENTS_IDEAS" FromRole="IDEA_COMMENTS" ToRole="IDEAS" />
+          <NavigationProperty Name="USER" Relationship="Self.FK_IDEA_COMMENTS_USERS" FromRole="IDEA_COMMENTS" ToRole="USERS" />
+        </EntityType>
+        <EntityType Name="IDEA_POINTS">
+          <Key>
+            <PropertyRef Name="USERNAME" />
+            <PropertyRef Name="IDEA_ID" />
+          </Key>
+          <Property Name="USERNAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="IDEA_ID" Type="Int32" Nullable="false" />
+          <Property Name="POINT" Type="Int32" Nullable="false" />
+          <Property Name="SAVE_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="MODIFY_DATE" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="IDEA" Relationship="Self.FK_IDEA_POINTS_IDEAS" FromRole="IDEA_POINTS" ToRole="IDEAS" />
+          <NavigationProperty Name="USER" Relationship="Self.FK_IDEA_POINTS_USERS" FromRole="IDEA_POINTS" ToRole="USERS" />
+        </EntityType>
+        <EntityType Name="IDEA_STATUS">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Byte" Nullable="false" />
+          <Property Name="TITLE" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="IDEAS" Relationship="Self.FK_IDEAS_REFERENCE_IDEA_STA" FromRole="IDEA_STATUS" ToRole="IDEAS" />
+        </EntityType>
+        <EntityType Name="IDEA">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="USERNAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="STATUS_ID" Type="Byte" Nullable="false" />
+          <Property Name="TITLE" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CURRENT_SITUATION" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PREREQUISITE" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="STEPS" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ADVANTAGES" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="SAVE_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="MODIFY_DATE" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="COMMITTEE_VOTE_DETAIL" Relationship="Self.FK_COMMITTE_IDEAS" FromRole="IDEAS" ToRole="COMMITTEE_VOTE_DETAIL" />
+          <NavigationProperty Name="IDEA_COMMENTS" Relationship="Self.FK_IDEA_COMMENTS_IDEAS" FromRole="IDEAS" ToRole="IDEA_COMMENTS" />
+          <NavigationProperty Name="IDEA_POINTS" Relationship="Self.FK_IDEA_POINTS_IDEAS" FromRole="IDEAS" ToRole="IDEA_POINTS" />
+          <NavigationProperty Name="IDEA_STATUS" Relationship="Self.FK_IDEAS_REFERENCE_IDEA_STA" FromRole="IDEAS" ToRole="IDEA_STATUS" />
+          <NavigationProperty Name="USER" Relationship="Self.FK_IDEAS_USERS" FromRole="IDEAS" ToRole="USERS" />
+          <NavigationProperty Name="SELECTED_IDEA" Relationship="Self.FK_SELECTED_IDEA_IDEAS" FromRole="IDEAS" ToRole="SELECTED_IDEA" />
+        </EntityType>
+        <EntityType Name="SELECTED_IDEA">
+          <Key>
+            <PropertyRef Name="IDEA_ID" />
+          </Key>
+          <Property Name="IDEA_ID" Type="Int32" Nullable="false" />
+          <Property Name="YEAR" Type="Int32" Nullable="false" />
+          <Property Name="MONTH" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="IDEA" Relationship="Self.FK_SELECTED_IDEA_IDEAS" FromRole="SELECTED_IDEA" ToRole="IDEAS" />
+        </EntityType>
+        <EntityType Name="USER">
+          <Key>
+            <PropertyRef Name="USERNAME" />
+          </Key>
+          <Property Name="USERNAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="COMMITTEE_FLAG" Type="Boolean" Nullable="false" />
+          <Property Name="ADMIN_FLAG" Type="Boolean" Nullable="false" />
+          <Property Name="EMAIL" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="FIRST_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="LAST_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PASSWORD" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="SAVE_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="MODIFY_DATE" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="COMMENT_POINTS" Relationship="Self.FK_COMMENT_POINTS_USERS" FromRole="USERS" ToRole="COMMENT_POINTS" />
+          <NavigationProperty Name="COMMITTEE_VOTE_DETAIL" Relationship="Self.FK_COMMITTE_USERS" FromRole="USERS" ToRole="COMMITTEE_VOTE_DETAIL" />
+          <NavigationProperty Name="IDEA_COMMENTS" Relationship="Self.FK_IDEA_COMMENTS_USERS" FromRole="USERS" ToRole="IDEA_COMMENTS" />
+          <NavigationProperty Name="IDEA_POINTS" Relationship="Self.FK_IDEA_POINTS_USERS" FromRole="USERS" ToRole="IDEA_POINTS" />
+          <NavigationProperty Name="IDEAS" Relationship="Self.FK_IDEAS_USERS" FromRole="USERS" ToRole="IDEAS" />
+        </EntityType>
+        <Association Name="FK_COMMENT_POINTS_USERS">
+          <End Role="USERS" Type="Self.USER" Multiplicity="1" />
+          <End Role="COMMENT_POINTS" Type="Self.COMMENT_POINTS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USERS">
+              <PropertyRef Name="USERNAME" />
+            </Principal>
+            <Dependent Role="COMMENT_POINTS">
+              <PropertyRef Name="USERNAME" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_COMMITTE_IDEAS">
+          <End Role="IDEAS" Type="Self.IDEA" Multiplicity="1" />
+          <End Role="COMMITTEE_VOTE_DETAIL" Type="Self.COMMITTEE_VOTE_DETAIL" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="IDEAS">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="COMMITTEE_VOTE_DETAIL">
+              <PropertyRef Name="IDEAS_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_COMMITTE_USERS">
+          <End Role="USERS" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="COMMITTEE_VOTE_DETAIL" Type="Self.COMMITTEE_VOTE_DETAIL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USERS">
+              <PropertyRef Name="USERNAME" />
+            </Principal>
+            <Dependent Role="COMMITTEE_VOTE_DETAIL">
+              <PropertyRef Name="COMMITTEE_MEMBER" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_IDEA_COMMENTS_IDEAS">
+          <End Role="IDEAS" Type="Self.IDEA" Multiplicity="1" />
+          <End Role="IDEA_COMMENTS" Type="Self.IDEA_COMMENTS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="IDEAS">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="IDEA_COMMENTS">
+              <PropertyRef Name="IDEA_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_IDEA_COMMENTS_USERS">
+          <End Role="USERS" Type="Self.USER" Multiplicity="1" />
+          <End Role="IDEA_COMMENTS" Type="Self.IDEA_COMMENTS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USERS">
+              <PropertyRef Name="USERNAME" />
+            </Principal>
+            <Dependent Role="IDEA_COMMENTS">
+              <PropertyRef Name="USERNAME" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_IDEA_POINTS_IDEAS">
+          <End Role="IDEAS" Type="Self.IDEA" Multiplicity="1" />
+          <End Role="IDEA_POINTS" Type="Self.IDEA_POINTS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="IDEAS">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="IDEA_POINTS">
+              <PropertyRef Name="IDEA_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_IDEA_POINTS_USERS">
+          <End Role="USERS" Type="Self.USER" Multiplicity="1" />
+          <End Role="IDEA_POINTS" Type="Self.IDEA_POINTS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USERS">
+              <PropertyRef Name="USERNAME" />
+            </Principal>
+            <Dependent Role="IDEA_POINTS">
+              <PropertyRef Name="USERNAME" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_IDEAS_REFERENCE_IDEA_STA">
+          <End Role="IDEA_STATUS" Type="Self.IDEA_STATUS" Multiplicity="1" />
+          <End Role="IDEAS" Type="Self.IDEA" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="IDEA_STATUS">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="IDEAS">
+              <PropertyRef Name="STATUS_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_IDEAS_USERS">
+          <End Role="USERS" Type="Self.USER" Multiplicity="1" />
+          <End Role="IDEAS" Type="Self.IDEA" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USERS">
+              <PropertyRef Name="USERNAME" />
+            </Principal>
+            <Dependent Role="IDEAS">
+              <PropertyRef Name="USERNAME" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SELECTED_IDEA_IDEAS">
+          <End Role="IDEAS" Type="Self.IDEA" Multiplicity="1" />
+          <End Role="SELECTED_IDEA" Type="Self.SELECTED_IDEA" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="IDEAS">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SELECTED_IDEA">
+              <PropertyRef Name="IDEA_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="IdeaManagmentDatabaseEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="COMMENT_POINTS" EntityType="Self.COMMENT_POINTS" />
+          <EntitySet Name="COMMITTEE_VOTE_DETAIL" EntityType="Self.COMMITTEE_VOTE_DETAIL" />
+          <EntitySet Name="IDEA_COMMENTS" EntityType="Self.IDEA_COMMENTS" />
+          <EntitySet Name="IDEA_POINTS" EntityType="Self.IDEA_POINTS" />
+          <EntitySet Name="IDEA_STATUS" EntityType="Self.IDEA_STATUS" />
+          <EntitySet Name="IDEAS" EntityType="Self.IDEA" />
+          <EntitySet Name="SELECTED_IDEA" EntityType="Self.SELECTED_IDEA" />
+          <EntitySet Name="USERS" EntityType="Self.USER" />
+          <AssociationSet Name="FK_COMMENT_POINTS_USERS" Association="Self.FK_COMMENT_POINTS_USERS">
+            <End Role="USERS" EntitySet="USERS" />
+            <End Role="COMMENT_POINTS" EntitySet="COMMENT_POINTS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_COMMITTE_IDEAS" Association="Self.FK_COMMITTE_IDEAS">
+            <End Role="IDEAS" EntitySet="IDEAS" />
+            <End Role="COMMITTEE_VOTE_DETAIL" EntitySet="COMMITTEE_VOTE_DETAIL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_COMMITTE_USERS" Association="Self.FK_COMMITTE_USERS">
+            <End Role="USERS" EntitySet="USERS" />
+            <End Role="COMMITTEE_VOTE_DETAIL" EntitySet="COMMITTEE_VOTE_DETAIL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_IDEA_COMMENTS_IDEAS" Association="Self.FK_IDEA_COMMENTS_IDEAS">
+            <End Role="IDEAS" EntitySet="IDEAS" />
+            <End Role="IDEA_COMMENTS" EntitySet="IDEA_COMMENTS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_IDEA_COMMENTS_USERS" Association="Self.FK_IDEA_COMMENTS_USERS">
+            <End Role="USERS" EntitySet="USERS" />
+            <End Role="IDEA_COMMENTS" EntitySet="IDEA_COMMENTS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_IDEA_POINTS_IDEAS" Association="Self.FK_IDEA_POINTS_IDEAS">
+            <End Role="IDEAS" EntitySet="IDEAS" />
+            <End Role="IDEA_POINTS" EntitySet="IDEA_POINTS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_IDEA_POINTS_USERS" Association="Self.FK_IDEA_POINTS_USERS">
+            <End Role="USERS" EntitySet="USERS" />
+            <End Role="IDEA_POINTS" EntitySet="IDEA_POINTS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_IDEAS_REFERENCE_IDEA_STA" Association="Self.FK_IDEAS_REFERENCE_IDEA_STA">
+            <End Role="IDEA_STATUS" EntitySet="IDEA_STATUS" />
+            <End Role="IDEAS" EntitySet="IDEAS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_IDEAS_USERS" Association="Self.FK_IDEAS_USERS">
+            <End Role="USERS" EntitySet="USERS" />
+            <End Role="IDEAS" EntitySet="IDEAS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SELECTED_IDEA_IDEAS" Association="Self.FK_SELECTED_IDEA_IDEAS">
+            <End Role="IDEAS" EntitySet="IDEAS" />
+            <End Role="SELECTED_IDEA" EntitySet="SELECTED_IDEA" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="IdeaManagmentDatabaseModelStoreContainer" CdmEntityContainer="IdeaManagmentDatabaseEntities">
+          <EntitySetMapping Name="COMMENT_POINTS">
+            <EntityTypeMapping TypeName="IdeaManagmentDatabaseModel.COMMENT_POINTS">
+              <MappingFragment StoreEntitySet="COMMENT_POINTS">
+                <ScalarProperty Name="USERNAME" ColumnName="USERNAME" />
+                <ScalarProperty Name="COMMENT_ID" ColumnName="COMMENT_ID" />
+                <ScalarProperty Name="POINT" ColumnName="POINT" />
+                <ScalarProperty Name="SAVE_DATE" ColumnName="SAVE_DATE" />
+                <ScalarProperty Name="MODIFY_DATE" ColumnName="MODIFY_DATE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="COMMITTEE_VOTE_DETAIL">
+            <EntityTypeMapping TypeName="IdeaManagmentDatabaseModel.COMMITTEE_VOTE_DETAIL">
+              <MappingFragment StoreEntitySet="COMMITTEE_VOTE_DETAIL">
+                <ScalarProperty Name="IDEAS_ID" ColumnName="IDEAS_ID" />
+                <ScalarProperty Name="COMMITTEE_MEMBER" ColumnName="COMMITTEE_MEMBER" />
+                <ScalarProperty Name="PROFIT_AMOUNT" ColumnName="PROFIT_AMOUNT" />
+                <ScalarProperty Name="SAVING_RESOURCE_AMOUNT" ColumnName="SAVING_RESOURCE_AMOUNT" />
+                <ScalarProperty Name="SAVE_DATE" ColumnName="SAVE_DATE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="IDEA_COMMENTS">
+            <EntityTypeMapping TypeName="IdeaManagmentDatabaseModel.IDEA_COMMENTS">
+              <MappingFragment StoreEntitySet="IDEA_COMMENTS">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="USERNAME" ColumnName="USERNAME" />
+                <ScalarProperty Name="IDEA_ID" ColumnName="IDEA_ID" />
+                <ScalarProperty Name="COMMENT" ColumnName="COMMENT" />
+                <ScalarProperty Name="SAVE_DATE" ColumnName="SAVE_DATE" />
+                <ScalarProperty Name="MODIFY_DATE" ColumnName="MODIFY_DATE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="IDEA_POINTS">
+            <EntityTypeMapping TypeName="IdeaManagmentDatabaseModel.IDEA_POINTS">
+              <MappingFragment StoreEntitySet="IDEA_POINTS">
+                <ScalarProperty Name="USERNAME" ColumnName="USERNAME" />
+                <ScalarProperty Name="IDEA_ID" ColumnName="IDEA_ID" />
+                <ScalarProperty Name="POINT" ColumnName="POINT" />
+                <ScalarProperty Name="SAVE_DATE" ColumnName="SAVE_DATE" />
+                <ScalarProperty Name="MODIFY_DATE" ColumnName="MODIFY_DATE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="IDEA_STATUS">
+            <EntityTypeMapping TypeName="IdeaManagmentDatabaseModel.IDEA_STATUS">
+              <MappingFragment StoreEntitySet="IDEA_STATUS">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="TITLE" ColumnName="TITLE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="IDEAS">
+            <EntityTypeMapping TypeName="IdeaManagmentDatabaseModel.IDEA">
+              <MappingFragment StoreEntitySet="IDEAS">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="USERNAME" ColumnName="USERNAME" />
+                <ScalarProperty Name="STATUS_ID" ColumnName="STATUS_ID" />
+                <ScalarProperty Name="TITLE" ColumnName="TITLE" />
+                <ScalarProperty Name="CURRENT_SITUATION" ColumnName="CURRENT_SITUATION" />
+                <ScalarProperty Name="PREREQUISITE" ColumnName="PREREQUISITE" />
+                <ScalarProperty Name="STEPS" ColumnName="STEPS" />
+                <ScalarProperty Name="ADVANTAGES" ColumnName="ADVANTAGES" />
+                <ScalarProperty Name="SAVE_DATE" ColumnName="SAVE_DATE" />
+                <ScalarProperty Name="MODIFY_DATE" ColumnName="MODIFY_DATE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SELECTED_IDEA">
+            <EntityTypeMapping TypeName="IdeaManagmentDatabaseModel.SELECTED_IDEA">
+              <MappingFragment StoreEntitySet="SELECTED_IDEA">
+                <ScalarProperty Name="IDEA_ID" ColumnName="IDEA_ID" />
+                <ScalarProperty Name="YEAR" ColumnName="YEAR" />
+                <ScalarProperty Name="MONTH" ColumnName="MONTH" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="USERS">
+            <EntityTypeMapping TypeName="IdeaManagmentDatabaseModel.USER">
+              <MappingFragment StoreEntitySet="USERS">
+                <ScalarProperty Name="USERNAME" ColumnName="USERNAME" />
+                <ScalarProperty Name="COMMITTEE_FLAG" ColumnName="COMMITTEE_FLAG" />
+                <ScalarProperty Name="ADMIN_FLAG" ColumnName="ADMIN_FLAG" />
+                <ScalarProperty Name="EMAIL" ColumnName="EMAIL" />
+                <ScalarProperty Name="FIRST_NAME" ColumnName="FIRST_NAME" />
+                <ScalarProperty Name="LAST_NAME" ColumnName="LAST_NAME" />
+                <ScalarProperty Name="PASSWORD" ColumnName="PASSWORD" />
+                <ScalarProperty Name="SAVE_DATE" ColumnName="SAVE_DATE" />
+                <ScalarProperty Name="MODIFY_DATE" ColumnName="MODIFY_DATE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
