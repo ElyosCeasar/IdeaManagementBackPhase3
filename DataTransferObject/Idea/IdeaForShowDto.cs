@@ -14,6 +14,6 @@ namespace DataTransferObject.Idea
         public byte StatusId { get; set; }
         public string Status { get; set; }
         public string Title { get; set; }
-        public System.DateTime SaveDate { get; set; }
+        public string SaveDate { get; set; }
     }
 }

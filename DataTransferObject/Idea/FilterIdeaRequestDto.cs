@@ -15,5 +15,6 @@ namespace DataTransferObject.Idea
         public int? Month { get; set; }
         public int? Year { get; set; }
         public bool? OnlyshowMyIdea { get; set; }
+        public string MyUsername { get; set; }
     }
 }

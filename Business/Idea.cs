@@ -97,5 +97,10 @@ namespace Business
         {
             return _Repository.GetIdeasTop10CurrentWeek();
         }
+
+        public IEnumerable<IdeaForShowDto> FilterSerchingIdea(FilterIdeaRequestDto searchItem)
+        {
+            return _Repository.FilterSerchingIdea(searchItem));
+        }
     }
 }

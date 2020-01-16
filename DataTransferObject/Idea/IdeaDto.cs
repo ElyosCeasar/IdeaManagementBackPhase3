@@ -13,6 +13,6 @@ namespace DataTransferObject.Idea
         public string FullName { get; set; }
         public string Username { get; set; }
         public string Status { get; set; } 
-        public System.DateTime SaveDate { get; set; }
+        public string SaveDate { get; set; }
     }
 }

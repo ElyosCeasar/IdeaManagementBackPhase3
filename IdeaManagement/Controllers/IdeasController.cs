@@ -168,19 +168,14 @@ namespace IdeaManagement.Controllers
         /// از
         /// get
         /// می توان استفاده کرد ولی من ترجیحم این بود که در بدنه در خواست ارسال شود
-        /// فیلتر کردن بر اساس 
-        /// 1- نامکامل(نام و نام خانوادگی)
-        /// 2-نام کاربری
-        /// 3-عضو کمیته بودن یا نبودن مقدار 0 یا 1 یا 2 یا 3 می گیرد 0 به معنای کاربر معمولی 1 به معنای عضو کمیته 2 به معنای ادمین 3 به معنای همه
-        /// بدیه ی است که می تواند بعضی از موارد نال یا خالی باشد
         /// </summary>
         /// <param name="username"></param>
         /// <returns></returns>
-        [Route("api/User/FilterSerching")]
+        [Route("api/Idea/FilterSerchingIdea")]
         [HttpPost]
         public IEnumerable<IdeaForShowDto> FilterSerchingIdea(FilterIdeaRequestDto searchItem)
         {
-            return null; // _business.FilterSerchingIdea(searchItem);
+            return  _business.FilterSerchingIdea(searchItem);
         }
     }
 }
