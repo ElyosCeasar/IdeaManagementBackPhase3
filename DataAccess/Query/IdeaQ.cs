@@ -18,7 +18,7 @@ namespace DataAccess.Query
             IEnumerable<IdeaForShowDto> res = null;
             using (_db = new IdeaManagmentDatabaseEntities())
             {
-                res = _db.IDEAS.ToList().Select(x => new IdeaForShowDto()
+                res = _db.IDEAS.OrderByDescending(x=>x.SAVE_DATE).ToList().Select(x => new IdeaForShowDto()
                 {
                     Id =x.ID,
                     Username =x.USERNAME,
@@ -26,8 +26,9 @@ namespace DataAccess.Query
                     SaveDate = Persia.Calendar.ConvertToPersian(x.SAVE_DATE).Persian,
                     Status =x.IDEA_STATUS.TITLE,
                     StatusId =x.STATUS_ID,
-                    Title =x.TITLE
-                  });
+                    Title =x.TITLE,
+                    TotalPoints = x.IDEA_POINTS.Sum(w => w.POINT)
+                });
 
   
             }
@@ -139,18 +140,65 @@ namespace DataAccess.Query
                 }
                 _filterYearAndMonth(ideas,searchItem.Year,searchItem.Month);
 
-                res = ideas.ToList().Select(x => new IdeaForShowDto() {
+                res = ideas.OrderByDescending(x => x.SAVE_DATE).ToList().Select(x => new IdeaForShowDto() {
                     Id=x.ID,
                     FullName=x.USER.FIRST_NAME+" "+x.USER.LAST_NAME,
                     Title=x.TITLE,
                     Status=x.IDEA_STATUS.TITLE,
                     SaveDate= Persia.Calendar.ConvertToPersian(x.SAVE_DATE).Persian,
                     StatusId=x.STATUS_ID,
-                    Username=x.USERNAME
-                   
+                    Username=x.USERNAME,
+                    TotalPoints = x.IDEA_POINTS.Sum(w => w.POINT)
+
                 });
             }
             return res;
+        }
+        //----------------------------------------------------------------------------------------------------------
+
+        public IEnumerable<WinnerIdeaForShowDto> FilterWinnerIdea(FilterWinnerIdeaRequestDto searchItem)
+        {
+            using (_db = new IdeaManagmentDatabaseEntities())
+            {
+                IQueryable<SELECTED_IDEA> selectedIdeas = _db.SELECTED_IDEA;
+                if (searchItem.Year.HasValue)
+                {
+                    selectedIdeas = selectedIdeas.Where(x => x.YEAR == searchItem.Year.Value);
+                }
+                if (searchItem.Month.HasValue)
+                {
+                    selectedIdeas = selectedIdeas.Where(x => x.MONTH == searchItem.Month.Value);
+                }
+
+                return selectedIdeas.OrderByDescending(x => x.YEAR * (x.MONTH > 9 ? 100 : 1000) + x.MONTH).ToList().Select(s => new WinnerIdeaForShowDto()
+                {
+                    TITLE = s.IDEA.TITLE,
+                    FullName = s.IDEA.USER.FIRST_NAME + " " + s.IDEA.USER.LAST_NAME,
+                    Username = s.IDEA.USERNAME,
+                    AcceptDate = s.YEAR + "/" + s.MONTH + "/" + 1,
+                    SaveDate = Persia.Calendar.ConvertToPersian(s.IDEA.SAVE_DATE).Persian,
+                    TotalPoints = s.IDEA.IDEA_POINTS.Sum(x => x.POINT)
+                });
+            }
+        }
+
+        //----------------------------------------------------------------------------------------------------------
+
+        public IEnumerable<WinnerIdeaForShowDto> GetAllWinnerIdea()
+        {
+            using (_db = new IdeaManagmentDatabaseEntities())
+            {
+
+                return _db.SELECTED_IDEA.OrderByDescending(x=>x.YEAR*(x.MONTH>9? 100:1000)+x.MONTH).ToList().Select(s => new WinnerIdeaForShowDto()
+                {   
+                    TITLE=s.IDEA.TITLE,
+                    FullName=s.IDEA.USER.FIRST_NAME+" "+s.IDEA.USER.LAST_NAME,
+                    Username=s.IDEA.USERNAME,
+                    AcceptDate =s.YEAR+"/"+s.MONTH+"/"+1,
+                    SaveDate= Persia.Calendar.ConvertToPersian(s.IDEA.SAVE_DATE).Persian,
+                    TotalPoints = s.IDEA.IDEA_POINTS.Sum(x => x.POINT)
+                });
+            }
         }
 
         //----------------------------------------------------------------------------------------------------------

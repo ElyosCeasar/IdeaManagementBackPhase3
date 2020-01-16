@@ -100,7 +100,39 @@ namespace Business
 
         public IEnumerable<IdeaForShowDto> FilterSerchingIdea(FilterIdeaRequestDto searchItem)
         {
-            return _Repository.FilterSerchingIdea(searchItem));
+            return _Repository.FilterSerchingIdea(searchItem);
         }
+        //-------------------------------------------------------------------------------------------------
+
+        public IEnumerable<WinnerIdeaForShowDto> GetAllWinnerIdea()
+        {
+            return _Repository.GetAllWinnerIdea();
+        }
+        //-------------------------------------------------------------------------------------------------
+
+        public IEnumerable<WinnerIdeaForShowDto> FilterWinnerIdea(FilterWinnerIdeaRequestDto searchItem)
+        {
+            return _Repository.FilterWinnerIdea(searchItem);
+        }
+        //-------------------------------------------------------------------------------------------------
+
+        public IEnumerable<IdeaForShowDto> FilterAllNotDecidedIdea(FilterAllNotDecidedIdeaRequestDto searchItem)
+        {
+            return _Repository.FilterAllNotDecidedIdea(searchItem);
+        }
+        //-------------------------------------------------------------------------------------------------
+
+        public IEnumerable<IdeaForShowDto> GetAllCurrentMontDecidedIdea()
+        {
+            return _Repository.GetAllCurrentMontDecidedIdea();
+        }
+        //-------------------------------------------------------------------------------------------------
+
+        public IEnumerable<IdeaForShowDto> GetAllNotDecidedIdea()
+        {
+            return _Repository.GetAllNotDecidedIdea();
+        }
+        //-------------------------------------------------------------------------------------------------
+
     }
 }

@@ -177,5 +177,43 @@ namespace IdeaManagement.Controllers
         {
             return  _business.FilterSerchingIdea(searchItem);
         }
+
+        //-------------------------------------------------------------------------------------------------
+        [Route("api/Idea/GetAllWinnerIdea")]
+        [HttpGet]
+        public IEnumerable<WinnerIdeaForShowDto> GetAllWinnerIdea()
+        {
+            return _business.GetAllWinnerIdea();
+        }
+        //-------------------------------------------------------------------------------------------------
+        [Route("api/Idea/FilterWinnerIdea")]
+        [HttpPost]
+        public IEnumerable<WinnerIdeaForShowDto> FilterWinnerIdea(FilterWinnerIdeaRequestDto searchItem)
+                    {
+            return _business.FilterWinnerIdea(searchItem);
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        [Route("api/Idea/GetAllNotDecidedIdea")]
+        [HttpGet]
+        public IEnumerable<IdeaForShowDto> GetAllNotDecidedIdea()
+        {
+            return _business.GetAllNotDecidedIdea();
+        }
+        //-------------------------------------------------------------------------------------------------   
+        [Route("api/Idea/GetAllCurrentMontDecidedIdea")]
+        [HttpGet]
+        public IEnumerable<IdeaForShowDto> GetAllCurrentMontDecidedIdea()
+        {
+            return _business.GetAllCurrentMontDecidedIdea();
+        }
+        //-------------------------------------------------------------------------------------------------   
+        [Route("api/Idea/FilterAllNotDecidedIdea")]
+        [HttpGet]
+        public IEnumerable<IdeaForShowDto> FilterAllNotDecidedIdea(FilterAllNotDecidedIdeaRequestDto searchItem)
+        {
+            return _business.FilterAllNotDecidedIdea(searchItem);
+        }
+
     }
 }

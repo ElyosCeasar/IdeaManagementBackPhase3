@@ -15,5 +15,6 @@ namespace DataTransferObject.Idea
         public string Status { get; set; }
         public string Title { get; set; }
         public string SaveDate { get; set; }
-    }
+        public int TotalPoints{ get; set; }
+}
 }

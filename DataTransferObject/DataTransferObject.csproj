@@ -58,7 +58,9 @@
     <Compile Include="Committee\VoteDetailDto.cs" />
     <Compile Include="Common\Result.cs" />
     <Compile Include="Idea\ChangedIdeaDto.cs" />
+    <Compile Include="Idea\FilterAllNotDecidedIdeaRequestDto.cs" />
     <Compile Include="Idea\FilterIdeaRequestDto.cs" />
+    <Compile Include="Idea\FilterWinnerIdeaRequestDto.cs" />
     <Compile Include="Idea\IdeaDetailForShowDto.cs" />
     <Compile Include="Idea\IdeaDto.cs" />
     <Compile Include="Idea\IdeaForShowDto.cs" />
@@ -66,6 +68,7 @@
     <Compile Include="Idea\newIdea.cs" />
     <Compile Include="Idea\IdeaPointDto.cs" />
     <Compile Include="Comment\IdeaCommentsDto.cs" />
+    <Compile Include="Idea\WinnerIdeaForShowDto.cs" />
     <Compile Include="User\FilterUserRequestDto.cs" />
     <Compile Include="User\ProfileForUpdateDto.cs" />
     <Compile Include="User\UserDetailForShowDto.cs" />
