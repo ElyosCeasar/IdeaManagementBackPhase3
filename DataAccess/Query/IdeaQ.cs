@@ -154,6 +154,104 @@ namespace DataAccess.Query
             }
             return res;
         }
+        //-------------------------------------------------------------------------------------------------
+
+        public IEnumerable<int> GetYearsFromOldestIdea() 
+        {
+            DateTime oldestTime = DateTime.Now;//first intial
+            int nowShamsiYear = Persia.Calendar.ConvertToPersian(oldestTime).ArrayType[0];
+            using (_db = new IdeaManagmentDatabaseEntities())
+            {
+                var tempOldest = _db.IDEAS.Min(x=>x.SAVE_DATE);
+                if (tempOldest != null)
+                {
+                    oldestTime = tempOldest;
+                }
+            }
+            int smallestShamsiYear = Persia.Calendar.ConvertToPersian(oldestTime).ArrayType[0];
+            List<int> years = new List<int>();
+            for(int i = nowShamsiYear; i >= smallestShamsiYear; i--)
+            {
+                years.Add(i);
+            }
+            return years;
+        }
+
+        //----------------------------------------------------------------------------------------------------------
+
+        public IEnumerable<IdeaForShowDto> GetAllNotDecidedIdea()
+        {
+            IEnumerable<IdeaForShowDto> res = null;
+            using (_db = new IdeaManagmentDatabaseEntities())
+            {
+                res = _db.IDEAS.Where(x=>x.STATUS_ID==0).OrderByDescending(x => x.SAVE_DATE).ToList().Select(x => new IdeaForShowDto()
+                {
+                    Id = x.ID,
+                    Username = x.USERNAME,
+                    FullName = x.USER.FIRST_NAME + " " + x.USER.LAST_NAME,
+                    SaveDate = Persia.Calendar.ConvertToPersian(x.SAVE_DATE).Persian,
+                    Status = x.IDEA_STATUS.TITLE,
+                    StatusId = x.STATUS_ID,
+                    Title = x.TITLE,
+                    TotalPoints = x.IDEA_POINTS.Sum(w => w.POINT)
+                });
+
+
+            }
+            return res;
+        }
+        //----------------------------------------------------------------------------------------------------------
+
+        public IEnumerable<IdeaForShowDto> GetAllCurrentMontDecidedIdea()
+        {
+            IEnumerable<IdeaForShowDto> res = null;
+            using (_db = new IdeaManagmentDatabaseEntities())
+            {
+                IQueryable<IDEA> temp = _db.IDEAS;
+                var datePersion = Persia.Calendar.ConvertToPersian(DateTime.Now);
+                _filterYearAndMonth(temp, datePersion.ArrayType[0], datePersion.ArrayType[1]);
+                res = temp.OrderByDescending(x => x.SAVE_DATE).ToList().Select(x => new IdeaForShowDto()
+                {
+                    Id = x.ID,
+                    Username = x.USERNAME,
+                    FullName = x.USER.FIRST_NAME + " " + x.USER.LAST_NAME,
+                    SaveDate = Persia.Calendar.ConvertToPersian(x.SAVE_DATE).Persian,
+                    Status = x.IDEA_STATUS.TITLE,
+                    StatusId = x.STATUS_ID,
+                    Title = x.TITLE,
+                    TotalPoints = x.IDEA_POINTS.Sum(w => w.POINT)
+                });
+
+
+            }
+            return res;
+        }
+        //----------------------------------------------------------------------------------------------------------
+
+        public IEnumerable<IdeaForShowDto> FilterAllNotDecidedIdea(FilterAllNotDecidedIdeaRequestDto searchItem)
+        {
+            IEnumerable<IdeaForShowDto> res = null;
+            using (_db = new IdeaManagmentDatabaseEntities())
+            {
+                IQueryable<IDEA> temp = _db.IDEAS;
+                _filterYearAndMonth(temp, searchItem.Year, searchItem.Month);
+                res = temp.OrderByDescending(x => x.SAVE_DATE).ToList().Select(x => new IdeaForShowDto()
+                {
+                    Id = x.ID,
+                    Username = x.USERNAME,
+                    FullName = x.USER.FIRST_NAME + " " + x.USER.LAST_NAME,
+                    SaveDate = Persia.Calendar.ConvertToPersian(x.SAVE_DATE).Persian,
+                    Status = x.IDEA_STATUS.TITLE,
+                    StatusId = x.STATUS_ID,
+                    Title = x.TITLE,
+                    TotalPoints = x.IDEA_POINTS.Sum(w => w.POINT)
+                });
+
+
+            }
+            return res;
+        }
+
         //----------------------------------------------------------------------------------------------------------
 
         public IEnumerable<WinnerIdeaForShowDto> FilterWinnerIdea(FilterWinnerIdeaRequestDto searchItem)

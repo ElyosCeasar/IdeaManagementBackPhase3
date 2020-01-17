@@ -209,11 +209,20 @@ namespace IdeaManagement.Controllers
         }
         //-------------------------------------------------------------------------------------------------   
         [Route("api/Idea/FilterAllNotDecidedIdea")]
-        [HttpGet]
+        [HttpPost]
         public IEnumerable<IdeaForShowDto> FilterAllNotDecidedIdea(FilterAllNotDecidedIdeaRequestDto searchItem)
         {
             return _business.FilterAllNotDecidedIdea(searchItem);
         }
+        //-------------------------------------------------------------------------------------------------   
+        [Route("api/Idea/GetYearsFromLastIdea")]
+        [HttpGet]
+        public IEnumerable<int> GetYearsFromOldestIdea()
+        {
+            return _business.GetYearsFromOldestIdea();
+        }
+        //-------------------------------------------------------------------------------------------------   
+
 
     }
 }
