@@ -13,7 +13,7 @@ namespace DataTransferObject.User
         public string FullName { get; set; }
         public int IdeaId { get; set; }
         public string Comment { get; set; }
-        public System.DateTime SaveDate { get; set; }
+        public string SaveDate { get; set; }
 
         public int Points { get; set; }
     }

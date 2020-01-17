@@ -27,8 +27,8 @@ namespace DataAccess.Query
                     IdeaId =x.IDEA_ID,
                     Comment =x.COMMENT,
                     Points = _db.COMMENT_POINTS.Where(p => p.COMMENT_ID == x.ID).Sum(z=>z.POINT),
-                    SaveDate =x.SAVE_DATE,
-                    Username =x.USERNAME,
+                    SaveDate = Persia.Calendar.ConvertToPersian(x.SAVE_DATE).Persian,
+                    Username =x.USERNAME, 
                     FullName =x.USER.FIRST_NAME+" "+x.USER.LAST_NAME
 
                 }).OrderBy(c=>c.Points).ToList();

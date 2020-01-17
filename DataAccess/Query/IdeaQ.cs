@@ -46,7 +46,7 @@ namespace DataAccess.Query
                     {
                         Id = idea.ID,
                         POINT = idea.IDEA_POINTS.Sum(x => x.POINT),
-                        SAVE_DATE = idea.SAVE_DATE,
+                        SAVE_DATE = Persia.Calendar.ConvertToPersian(idea.SAVE_DATE).Persian,
                         Status = idea.IDEA_STATUS.TITLE,
                         CurrentSituation = idea.CURRENT_SITUATION,
                         Prerequisite = idea.PREREQUISITE,
@@ -402,7 +402,7 @@ namespace DataAccess.Query
             
                     res.Add(new IdeaDto()
                     {
-                        TITLE = idea.TITLE,
+                        Title = idea.TITLE,
                         TotalPoints = i.TOTAL_POINT,
                         FullName = idea.USER.FIRST_NAME+" "+idea.USER.LAST_NAME,
                         Username = idea.USERNAME,
@@ -455,7 +455,7 @@ namespace DataAccess.Query
                     var idea = _db.IDEAS.Single(i => i.ID == x.IDEA_ID);
                     res.Add(new IdeaDto()
                     {
-                        TITLE = idea.TITLE,
+                        Title = idea.TITLE,
                         TotalPoints = x.TOTAL_POINT,
                         FullName = idea.USER.FIRST_NAME+" "+idea.USER.LAST_NAME,
                         Username = idea.USERNAME,
@@ -496,7 +496,7 @@ namespace DataAccess.Query
                     var idea = _db.IDEAS.Single(i => i.ID == x.IDEA_ID);
                     res.Add(new IdeaDto()
                     {
-                        TITLE = idea.TITLE,
+                        Title = idea.TITLE,
                         TotalPoints = x.TOTAL_POINT,
                         FullName = idea.USER.FIRST_NAME + " " + idea.USER.LAST_NAME,
                         Username = idea.USERNAME,

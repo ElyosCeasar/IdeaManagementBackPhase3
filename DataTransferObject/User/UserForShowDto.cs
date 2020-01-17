@@ -14,6 +14,6 @@ namespace DataTransferObject.User
         public string FirstName { get; set; }
         public string LastName { get; set; }
 
-        public System.DateTime SaveDate { get; set; }
+        public string SaveDate { get; set; }
     }
 }

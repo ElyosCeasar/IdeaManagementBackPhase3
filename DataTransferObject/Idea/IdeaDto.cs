@@ -8,7 +8,7 @@ namespace DataTransferObject.Idea
 {
     public class IdeaDto
     {
-        public string TITLE { get; set; }
+        public string Title { get; set; }
         public int TotalPoints { get; set; }
         public string FullName { get; set; }
         public string Username { get; set; }

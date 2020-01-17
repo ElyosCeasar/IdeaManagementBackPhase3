@@ -17,7 +17,7 @@ namespace DataTransferObject.Idea
         public string Prerequisite { get; set; }
         public string Steps { get; set; }
         public string Advantages { get; set; }
-        public System.DateTime SAVE_DATE { get; set; }
+        public string SAVE_DATE { get; set; }
         public int POINT { get; set; }
 
     }
