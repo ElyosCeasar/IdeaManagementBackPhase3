@@ -53,6 +53,20 @@ namespace IdeaManagement.Controllers
      res.Value);
         }
         //-------------------------------------------------------------------------------------------------
+        [Route("api/Auth/ForgetPassword")]
+        [HttpPost]
+        [AllowAnonymous]
+        public HttpResponseMessage ForgetPassword([FromBody]ForgetPasswordDto user)
+        {
+            Result res = _business.ForgetPassword(user);
+            if (res.Value)
+                return Request.CreateResponse(HttpStatusCode.OK,
+                     TokenManager.GenerateToken(user.Username));
+            else
+                return Request.CreateResponse(HttpStatusCode.BadRequest,
+     res.Value);
+        }
+        //-------------------------------------------------------------------------------------------------
 
     }
 }

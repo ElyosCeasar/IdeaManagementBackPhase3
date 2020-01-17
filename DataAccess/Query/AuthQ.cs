@@ -61,6 +61,33 @@ namespace DataAccess.Query
         }
         //-------------------------------------------------------------------------------------------------
 
+        public Result ForgetPassword(ForgetPasswordDto user)
+        {
+            Result res = new Result();
+        
+                using (_db = new IdeaManagmentDatabaseEntities())
+                {
+                var findUser = _db.USERS.FirstOrDefault(x =>
+                      x.EMAIL == user.Email.Trim() &&
+                      x.FIRST_NAME == user.FirstName.Trim() &&
+                      x.LAST_NAME == user.LastName.Trim() &&
+                     x.USERNAME == user.Username.Trim());
+                if (findUser != null)
+                {
+                    res.Value = true;
+                    res.Content = ""+findUser.PASSWORD;
+                }
+                else
+                {
+                    res.Value = false;
+                    res.Content = "اطلاعات مطابقت ندارد";
+                }
+             }
+
+            return res;
+        }
+        //-------------------------------------------------------------------------------------------------
+
 
     }
 }

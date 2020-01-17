@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Auth\ForgetPasswordDto.cs" />
     <Compile Include="Auth\UserForLoginDto.cs" />
     <Compile Include="Auth\UserForRegistrationDto.cs" />
     <Compile Include="Comment\CommentDto.cs" />
