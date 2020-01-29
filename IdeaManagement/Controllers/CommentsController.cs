@@ -27,7 +27,7 @@ namespace IdeaManagement.Controllers
         /// شده رو برمی گردونه
         /// </summary>
         /// <returns></returns>
-        [Route("api/Idea/GetAllComments/{ideaId}")]
+        [Route("api/Comments/GetAllComments/{ideaId}")]
         [HttpGet]
         public IEnumerable<IdeaCommentsDto> GetAllComments(int ideaId)
         {
@@ -40,7 +40,7 @@ namespace IdeaManagement.Controllers
         /// بعد از نظر کمیته راجع به ایده این بخش قفل می شه
         /// </summary>
         /// <returns></returns>
-        [Route("api/Idea/AddCommentToIdea")]
+        [Route("api/Comments/AddCommentToIdea")]
         [HttpPost]
         public HttpResponseMessage AddCommentToIdea(CommentDto newcomment)
         {
@@ -56,7 +56,7 @@ namespace IdeaManagement.Controllers
             /// بعد از نظر کمیته راجع به ایده این بخش قفل می شه
         /// </summary>
         /// <returns></returns>
-        [Route("api/Idea/UpdateComment")]
+        [Route("api/Comments/UpdateComment")]
         [HttpPut]
         public HttpResponseMessage UpdateComment(CommentDto newcomment)
         {
@@ -75,7 +75,7 @@ namespace IdeaManagement.Controllers
         /// بعد از نظر کمیته راجع به ایده این بخش قفل می شه
         ///         /// </summary>
         /// <returns></returns>
-        [Route("api/Idea/VoteToComment")]
+        [Route("api/Comments/VoteToComment")]
         [HttpPost]
         public HttpResponseMessage VoteToComment(VoteToCommentDto voteDetail)
         {

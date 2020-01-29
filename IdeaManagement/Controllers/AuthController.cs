@@ -49,8 +49,8 @@ namespace IdeaManagement.Controllers
             return Request.CreateResponse(HttpStatusCode.OK,
                  TokenManager.GenerateToken(user.Username));
             else
-                return Request.CreateResponse(HttpStatusCode.BadRequest,
-     res.Value);
+                return Request.CreateResponse(HttpStatusCode.PreconditionFailed,
+     res.Content);
         }
         //-------------------------------------------------------------------------------------------------
         [Route("api/Auth/ForgetPassword")]
@@ -61,10 +61,10 @@ namespace IdeaManagement.Controllers
             Result res = _business.ForgetPassword(user);
             if (res.Value)
                 return Request.CreateResponse(HttpStatusCode.OK,
-                     TokenManager.GenerateToken(user.Username));
+                     res.Content);
             else
                 return Request.CreateResponse(HttpStatusCode.BadRequest,
-     res.Value);
+     res.Content);
         }
         //-------------------------------------------------------------------------------------------------
 
