@@ -74,11 +74,11 @@ namespace IdeaManagement.Controllers
         /// <param name="username"></param>
         /// <returns></returns>
 
-        [Route("api/User/ChangeCommitteFlag/{username}/{value}")]
+        [Route("api/User/ChangeCommitteFlags")]
         [HttpPut]
-        public HttpResponseMessage ChangeCommitteFlag(string username,int value)
+        public HttpResponseMessage ChangeCommitteFlag(UserChangeCommitteeFlagDto info)
         {
-            Result res = _business.ChangeCommitteFlag(username,value);
+            Result res = _business.ChangeCommitteFlag(info.Username,info.Value);
             if (res.Value == true)
                 return Request.CreateResponse(HttpStatusCode.OK, res.Content);
             else

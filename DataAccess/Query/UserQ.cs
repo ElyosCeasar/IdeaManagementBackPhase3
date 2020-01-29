@@ -19,7 +19,7 @@ namespace DataAccess.Query
         {
             using (_db = new IdeaManagmentDatabaseEntities())
             {
-                return _db.USERS.Select(x => new UserForShowDto()
+                return _db.USERS.ToList().Select(x => new UserForShowDto()
                 {
                     CommitteFlag = x.COMMITTEE_FLAG,
                     AdminFlag = x.ADMIN_FLAG,
@@ -28,7 +28,7 @@ namespace DataAccess.Query
                     LastName = x.LAST_NAME,
                     SaveDate = Persia.Calendar.ConvertToPersian(x.SAVE_DATE).Persian,
                     Username = x.USERNAME
-                }).ToList();
+                });
             }
         }
         //-------------------------------------------------------------------------------------------------
@@ -103,10 +103,11 @@ namespace DataAccess.Query
                     {
                         var firstName = searchItem.FullName.Trim().Substring(0, searchItem.FullName.Trim().IndexOf(" "));
                         var lastName = searchItem.FullName.Trim().Substring(0, searchItem.FullName.Trim().IndexOf(" "));
+                        users = users.Where(u => u.FIRST_NAME.Contains(firstName.Trim()) && u.LAST_NAME.Contains(lastName.Trim()));
                     }
                     else
                     {
-                        users = users.Where(u => u.FIRST_NAME.Contains(searchItem.Username.Trim())|| u.LAST_NAME.Contains(searchItem.Username.Trim()));
+                        users = users.Where(u => u.FIRST_NAME.Contains(searchItem.FullName.Trim())|| u.LAST_NAME.Contains(searchItem.FullName.Trim()));
                     }
 
                 }
@@ -128,7 +129,7 @@ namespace DataAccess.Query
                         break;
 
                 }
-                res = users.Select(x => new UserForShowDto()
+                res = users.ToList().Select(x => new UserForShowDto()
                 {
                     CommitteFlag = x.COMMITTEE_FLAG,
                     AdminFlag = x.ADMIN_FLAG,

@@ -72,6 +72,7 @@
     <Compile Include="Idea\WinnerIdeaForShowDto.cs" />
     <Compile Include="User\FilterUserRequestDto.cs" />
     <Compile Include="User\ProfileForUpdateDto.cs" />
+    <Compile Include="User\UserChangeCommitteeFlagDto.cs" />
     <Compile Include="User\UserDetailForShowDto.cs" />
     <Compile Include="User\UserForProfileDto.cs" />
     <Compile Include="User\UserForShowDto.cs" />
