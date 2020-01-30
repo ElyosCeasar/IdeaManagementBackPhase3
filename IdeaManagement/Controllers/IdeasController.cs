@@ -74,7 +74,7 @@ namespace IdeaManagement.Controllers
             if (res.Value == true)
                 return Request.CreateResponse(HttpStatusCode.OK, res.Content);
             else
-                return Request.CreateResponse(HttpStatusCode.BadRequest, res.Content);
+                return Request.CreateResponse(HttpStatusCode.PreconditionFailed, res.Content);
         }
         //-------------------------------------------------------------------------------------------------
         /// <summary>
@@ -90,7 +90,7 @@ namespace IdeaManagement.Controllers
             if (res.Value == true)
                 return Request.CreateResponse(HttpStatusCode.OK, res.Content);
             else
-                return Request.CreateResponse(HttpStatusCode.BadRequest, res.Content);
+                return Request.CreateResponse(HttpStatusCode.PreconditionFailed, res.Content);
         }
         //-------------------------------------------------------------------------------------------------
         /// <summary>
@@ -107,7 +107,7 @@ namespace IdeaManagement.Controllers
             if (res.Value == true)
                 return Request.CreateResponse(HttpStatusCode.OK, res.Content);
             else
-                return Request.CreateResponse(HttpStatusCode.BadRequest, res.Content);
+                return Request.CreateResponse(HttpStatusCode.PreconditionFailed, res.Content);
         }
         //-------------------------------------------------------------------------------------------------
         /// <summary>

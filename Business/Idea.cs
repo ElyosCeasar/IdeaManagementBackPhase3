@@ -30,6 +30,20 @@ namespace Business
         //-------------------------------------------------------------------------------------------------
         public Result SendNewIdea(NewIdeaDto idea)
         {
+            Result result = new Result();
+            if (
+                idea.Advantages==null ||
+                idea.CurrentSituation== null ||
+                idea.Prerequisite== null ||
+                idea.Steps== null ||
+                idea.Title== null ||
+                idea.Username== null
+                )
+            {
+                result.Value = false;
+                result.Content = "همه‌ی بخش‌های اجباری پر نشده است";
+                return result;
+            }
             return _Repository.SendNewIdea(idea);
         }
         //-------------------------------------------------------------------------------------------------

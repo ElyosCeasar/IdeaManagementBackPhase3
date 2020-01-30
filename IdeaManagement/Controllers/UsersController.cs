@@ -50,7 +50,7 @@ namespace IdeaManagement.Controllers
                 return Request.CreateResponse(HttpStatusCode.OK, res.Content);
             else
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, res.Content);
+                return Request.CreateResponse(HttpStatusCode.PreconditionFailed, res.Content);
             }
         }
         //-------------------------------------------------------------------------------------------------
@@ -82,7 +82,7 @@ namespace IdeaManagement.Controllers
             if (res.Value == true)
                 return Request.CreateResponse(HttpStatusCode.OK, res.Content);
             else
-                return Request.CreateResponse(HttpStatusCode.BadRequest, res.Content);
+                return Request.CreateResponse(HttpStatusCode.PreconditionFailed, res.Content);
         }
 
         //-------------------------------------------------------------------------------------------------
@@ -136,7 +136,7 @@ namespace IdeaManagement.Controllers
     /// <th nzWidth = "13%" > تعداد ایده های برنده</th>
         /// </summary>
         /// <returns></returns>
-        [Route("api/Idea/GetTop10IdeaMaker")]
+        [Route("api/User/GetTop10IdeaMaker")]
         [HttpGet]
         public IEnumerable<UserShowingTop10Dto> GetTop10IdeaMaker()
         {
@@ -153,7 +153,7 @@ namespace IdeaManagement.Controllers
     /// <th nzWidth = "20%" > مجموع امتیاز ها</th>
         /// </summary>
         /// <returns></returns>
-        [Route("api/Idea/GetTop10CommentMaker")]
+        [Route("api/User/GetTop10CommentMaker")]
         [HttpGet]
         public IEnumerable<UserShowingTop10Dto> GetTop10CommentMaker()
         {

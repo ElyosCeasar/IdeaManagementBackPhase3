@@ -34,7 +34,7 @@ namespace IdeaManagement.Controllers
                 return Request.CreateResponse(HttpStatusCode.Created, res.Content);
             else
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, res.Content);
+                return Request.CreateResponse(HttpStatusCode.PreconditionFailed, res.Content);
             }
         }
         //-------------------------------------------------------------------------------------------------

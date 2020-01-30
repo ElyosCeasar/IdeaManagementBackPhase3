@@ -66,9 +66,9 @@ namespace DataAccess.Query
         public Result SendNewIdea(NewIdeaDto newIdea)
         {
             Result result = new Result();
-
             using (_db = new IdeaManagmentDatabaseEntities())
             {
+
 
                 IDEA idea = new IDEA()
                 {
@@ -84,8 +84,9 @@ namespace DataAccess.Query
                 _db.SaveChanges();
                 result.Value = true;
                 result.Content = "ایده جدید ایجاد شد";
-                return result;
+                
             }
+            return result;
         }     
         //----------------------------------------------------------------------------------------------------------
 
@@ -402,6 +403,7 @@ namespace DataAccess.Query
             
                     res.Add(new IdeaDto()
                     {
+                        Id=idea.ID,
                         Title = idea.TITLE,
                         TotalPoints = i.TOTAL_POINT,
                         FullName = idea.USER.FIRST_NAME+" "+idea.USER.LAST_NAME,
@@ -455,6 +457,7 @@ namespace DataAccess.Query
                     var idea = _db.IDEAS.Single(i => i.ID == x.IDEA_ID);
                     res.Add(new IdeaDto()
                     {
+                        Id=idea.ID,
                         Title = idea.TITLE,
                         TotalPoints = x.TOTAL_POINT,
                         FullName = idea.USER.FIRST_NAME+" "+idea.USER.LAST_NAME,
@@ -496,6 +499,7 @@ namespace DataAccess.Query
                     var idea = _db.IDEAS.Single(i => i.ID == x.IDEA_ID);
                     res.Add(new IdeaDto()
                     {
+                        Id=idea.ID,
                         Title = idea.TITLE,
                         TotalPoints = x.TOTAL_POINT,
                         FullName = idea.USER.FIRST_NAME + " " + idea.USER.LAST_NAME,
