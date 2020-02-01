@@ -84,6 +84,29 @@ namespace DataAccess.Query
                 return result;
             }
         }
+        //-----------------------------------------------------------------------------------------------------------
+
+        public IdeaCommentsDto GetSpeceficComment(int commentId)
+        {
+            IdeaCommentsDto res = null;
+            using (_db = new IdeaManagmentDatabaseEntities())
+            {
+                var temp = _db.IDEA_COMMENTS.FirstOrDefault(c => c.ID == commentId);
+                if (temp != null)
+                {
+                    res = new IdeaCommentsDto();
+                    res.Id = temp.ID;
+                    res.IdeaId = temp.IDEA_ID;
+                    res.Comment = temp.COMMENT;
+                    //don't want points
+                    //res.Points = _db.COMMENT_POINTS.Where(p => p.COMMENT_ID == temp.ID).Any() ? _db.COMMENT_POINTS.Where(p => p.COMMENT_ID == x.ID).Sum(z => z.POINT) : 0,
+                    res.SaveDate = Persia.Calendar.ConvertToPersian(temp.SAVE_DATE).Simple;
+                    res.Username = temp.USERNAME;
+                    res.FullName = temp.USER.FIRST_NAME + " " + temp.USER.LAST_NAME;
+                } 
+            }
+            return res;
+        }
 
         //-----------------------------------------------------------------------------------------------------------
         public Result UpdateComment(CommentDto newcomment)

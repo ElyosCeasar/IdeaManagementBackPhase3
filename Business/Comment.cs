@@ -39,6 +39,12 @@ namespace Business
             else
                 return _Repository.AddCommentToIdea(newcomment);
         }
+        //-------------------------------------------------------------------------------------------------
+
+        public IdeaCommentsDto GetSpeceficComment(int commentId)
+        {
+            return _Repository.GetSpeceficComment( commentId);
+        }
 
         //-------------------------------------------------------------------------------------------------
         public Result UpdateComment(CommentDto newcomment)

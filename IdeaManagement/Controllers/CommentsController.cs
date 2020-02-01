@@ -34,6 +34,17 @@ namespace IdeaManagement.Controllers
             return _business.GetAllComments(ideaId);
         }
         //-------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// گرفتن یک ایده‌ی خاص به کمک آیدی آن
+        /// </summary>
+        /// <param name="commentId"></param>
+        /// <returns></returns>
+        [Route("api/Comments/GetSpeceficComment/{commentId}")]
+        [HttpGet]
+        public IdeaCommentsDto GetSpeceficComment(int commentId)
+        {
+            return _business.GetSpeceficComment(commentId);
+        }
         //-------------------------------------------------------------------------------------------------
         /// <summary>
         /// کاربر بتونه به ایده نظر بده
