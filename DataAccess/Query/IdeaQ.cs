@@ -220,7 +220,7 @@ namespace DataAccess.Query
             {
                 IQueryable<IDEA> temp = _db.IDEAS.Where(x=>x.STATUS_ID>0);
                 var datePersion = Persia.Calendar.ConvertToPersian(DateTime.Now);
-                temp=_filterYearAndMonth(temp, datePersion.ArrayType[0], datePersion.ArrayType[1]);
+                temp=_filterYearAndMonthForCommitteVote(temp, datePersion.ArrayType[0], datePersion.ArrayType[1]);
                 res = temp.OrderByDescending(x => x.COMMITTEE_VOTE_DETAIL.SAVE_DATE).Select(x => new IdeaForShowDto()
                 {
                     Id = x.ID,
@@ -580,8 +580,7 @@ namespace DataAccess.Query
                 for (int i=1396;i<=yearPersionNow+1;i++)//1396 start software from
                 {
                     IQueryable<IDEA> ideasTemp;
-                    //if (monthP.Value != 10)//دی استثنا هست چون قسمت دوم از قسمت اول کوچک تر می شه
-                    //{
+     
                         var startDay = new DateTime(
                   Persia.Calendar.ConvertToGregorian(i, monthP.Value, 1, Persia.DateType.Persian).Year,
                    Persia.Calendar.ConvertToGregorian(i, monthP.Value, 1, Persia.DateType.Persian).Month,
@@ -611,31 +610,82 @@ namespace DataAccess.Query
                     ideasTemp = ideas.Where(x =>
                       x.SAVE_DATE >= startDay && x.SAVE_DATE <= endDay
                     );
-             //   }
-             //   else
-             //   {
-             //           var startDay = new DateTime(
-             //   Persia.Calendar.ConvertToGregorian(i,  10, 1, Persia.DateType.Persian).Year,
-             //    Persia.Calendar.ConvertToGregorian(i, 10, 1, Persia.DateType.Persian).Month,
-             //    Persia.Calendar.ConvertToGregorian(i, 10, 1, Persia.DateType.Persian).Day,
-             //    0,
-             //    0,
-             //    0);
-             //           var endDay = new DateTime(
-             //Persia.Calendar.ConvertToGregorian(i, 10, 30, Persia.DateType.Persian).Year,
-             //Persia.Calendar.ConvertToGregorian(i, 10, 30, Persia.DateType.Persian).Month,
-             //Persia.Calendar.ConvertToGregorian(i, 10, 30, Persia.DateType.Persian).Day,
-             //23,
-             //59,
-             //59);
 
-             //           ideasTemp = ideas.Where(x =>
-             //             x.SAVE_DATE >= startDay && x.SAVE_DATE <= endDay
-             //           );
-
-             //       }
                     ideasRes= ideasRes.Concat(ideasTemp);
             }
+                ideas = ideasRes;
+            }
+            return ideas;
+        }
+
+        //----------------------------------------------------------------------------------------------------------
+
+        private IQueryable<IDEA> _filterYearAndMonthForCommitteVote(IQueryable<IDEA> ideas, int? yearP, int? monthP)
+        {
+            if (yearP.HasValue == false && monthP.HasValue == false)
+            {
+                return ideas;//no change requires
+            }
+            if (yearP.HasValue)
+            {
+
+                var startDay = new DateTime(
+                     Persia.Calendar.ConvertToGregorian(yearP.Value, 1, 1, Persia.DateType.Persian).Year,
+                     Persia.Calendar.ConvertToGregorian(yearP.Value, 1, 1, Persia.DateType.Persian).Month,
+                     Persia.Calendar.ConvertToGregorian(yearP.Value, 1, 1, Persia.DateType.Persian).Day,
+                     0,
+                     0,
+                     0);
+                var endDay = new DateTime(
+                     Persia.Calendar.ConvertToGregorian(yearP.Value, 12, 29, Persia.DateType.Persian).Year,
+                      Persia.Calendar.ConvertToGregorian(yearP.Value, 12, 29, Persia.DateType.Persian).Month,
+                      Persia.Calendar.ConvertToGregorian(yearP.Value, 12, 29, Persia.DateType.Persian).Day,
+                     23,
+                     59,
+                     59);
+                ideas = ideas.Where(x => x.COMMITTEE_VOTE_DETAIL.SAVE_DATE >= startDay && x.COMMITTEE_VOTE_DETAIL.SAVE_DATE <= endDay);
+            }
+
+            if (monthP.HasValue)
+            {
+                var yearPersionNow = Persia.Calendar.ConvertToPersian(DateTime.Now).ArrayType[0];
+                IQueryable<IDEA> ideasRes = ideas.Where(x => 1 == 2);//need null IquryAble
+                for (int i = 1396; i <= yearPersionNow + 1; i++)//1396 start software from
+                {
+                    IQueryable<IDEA> ideasTemp;
+
+                    var startDay = new DateTime(
+              Persia.Calendar.ConvertToGregorian(i, monthP.Value, 1, Persia.DateType.Persian).Year,
+               Persia.Calendar.ConvertToGregorian(i, monthP.Value, 1, Persia.DateType.Persian).Month,
+               Persia.Calendar.ConvertToGregorian(i, monthP.Value, 1, Persia.DateType.Persian).Day,
+               0,
+               0,
+               0);
+                    int dayCountsInMonth;
+                    if (monthP.Value <= 6)
+                    {
+                        dayCountsInMonth = 31;
+                    }
+                    else
+                    {
+                        dayCountsInMonth = monthP.Value != 12 ? 30 : 29;
+                    }
+
+                    var endDay = new DateTime(
+                         Persia.Calendar.ConvertToGregorian(i, monthP.Value, dayCountsInMonth, Persia.DateType.Persian).Year,
+                         Persia.Calendar.ConvertToGregorian(i, monthP.Value, dayCountsInMonth, Persia.DateType.Persian).Month,
+                         Persia.Calendar.ConvertToGregorian(i, monthP.Value, dayCountsInMonth, Persia.DateType.Persian).Day,
+                         23,
+                         59,
+                         59);
+
+
+                    ideasTemp = ideas.Where(x =>
+                      x.COMMITTEE_VOTE_DETAIL.SAVE_DATE >= startDay && x.COMMITTEE_VOTE_DETAIL.SAVE_DATE <= endDay
+                    );
+
+                    ideasRes = ideasRes.Concat(ideasTemp);
+                }
                 ideas = ideasRes;
             }
             return ideas;

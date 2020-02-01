@@ -14,7 +14,7 @@ namespace DataAccess.Query
         private IdeaManagmentDatabaseEntities _db;
         //-------------------------------------------------------------------------------------------------
 
-        public Result VoteToIdea(int ideaId, VoteDetailDto voteDetailDto)
+        public Result VoteToIdea(int ideaId, VoteDetailDto voteDetailDto,string username)
         {
             Result res = new Result();
             using (_db = new IdeaManagmentDatabaseEntities())
@@ -30,7 +30,7 @@ namespace DataAccess.Query
                 {
                     var newVote = new COMMITTEE_VOTE_DETAIL()
                     {
-                        COMMITTEE_MEMBER=voteDetailDto.CommitteeMemberUserName,
+                        COMMITTEE_MEMBER=username,
                         IDEAS_ID=ideaId,
                          PROFIT_AMOUNT=voteDetailDto.ProfitAmount,
                          SAVING_RESOURCE_AMOUNT=voteDetailDto.SavingResourceAmount,
@@ -48,7 +48,7 @@ namespace DataAccess.Query
                     vote.PROFIT_AMOUNT = voteDetailDto.ProfitAmount;
                     vote.SAVING_RESOURCE_AMOUNT = voteDetailDto.SavingResourceAmount;
                     vote.SAVE_DATE = DateTime.Now;
-                    vote.COMMITTEE_MEMBER = voteDetailDto.CommitteeMemberUserName;
+                    vote.COMMITTEE_MEMBER = username;
                     _db.IDEAS.First(x => x.ID == ideaId).STATUS_ID = Convert.ToByte(voteDetailDto.Vote);
                     _db.SaveChanges();
                     res.Value = true;
@@ -83,6 +83,8 @@ namespace DataAccess.Query
                     _db.IDEAS.First(x => x.ID == ideaId).STATUS_ID = 0;
                     _db.COMMITTEE_VOTE_DETAIL.Remove(_db.COMMITTEE_VOTE_DETAIL.First(x => x.IDEAS_ID == ideaId));
                     _db.SaveChanges();
+                    res.Content = "ایده‌ی مورد نظر به رای داده نشده‌ها اضافه شد";
+                    res.Value = true;
                 }
             }
             return res;

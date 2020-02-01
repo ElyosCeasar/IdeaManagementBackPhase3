@@ -31,7 +31,8 @@ namespace IdeaManagement.Controllers
         [HttpPost]
         public HttpResponseMessage VoteToIdea(int ideaId, [FromBody] VoteDetailDto voteDetailDto)
         {
-            var res = _business.VoteToIdea(ideaId,voteDetailDto);
+            string username = "admin";//get it from token
+            var res = _business.VoteToIdea(ideaId,voteDetailDto,username);
             if (res.Value == true)
                 return Request.CreateResponse(HttpStatusCode.OK, res.Content);
             else
@@ -45,8 +46,9 @@ namespace IdeaManagement.Controllers
         /// <returns></returns>
         [Route("api/Committee/UnVoteIdea/{ideaId}")]
         [HttpDelete]
-        public HttpResponseMessage UnVoteIdea(int ideaId ,string username)
+        public HttpResponseMessage UnVoteIdea(int ideaId )
         {
+            string username = "admin";//get it from token
             var res = _business.UnVoteIdea(ideaId,username);
             if (res.Value == true)
                 return Request.CreateResponse(HttpStatusCode.OK, res.Content);

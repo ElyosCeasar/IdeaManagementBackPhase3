@@ -16,11 +16,12 @@ namespace Business
         public Committee()
         {
             _repository = new DataAccess.Query.CommitteeQ();
+            _repositoryUsers = new DataAccess.Query.UserQ();
 
         }
         //-------------------------------------------------------------------------------------------------
 
-        public Result VoteToIdea(int ideaId, VoteDetailDto voteDetailDto)
+        public Result VoteToIdea(int ideaId, VoteDetailDto voteDetailDto,string username)
         {
             if (voteDetailDto.Vote > 1)
             {
@@ -30,8 +31,8 @@ namespace Business
             {
                 voteDetailDto.Vote = 1;
             }
-            if(_repositoryUsers.IsCommitteMember(voteDetailDto.CommitteeMemberUserName))
-                return _repository.VoteToIdea(ideaId, voteDetailDto);
+            if(_repositoryUsers.IsCommitteMember(username))
+                return _repository.VoteToIdea(ideaId, voteDetailDto,username);
             else
             {
                 return new Result()
