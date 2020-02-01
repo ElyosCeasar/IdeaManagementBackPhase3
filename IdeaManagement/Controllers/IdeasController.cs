@@ -32,7 +32,7 @@ namespace IdeaManagement.Controllers
         /// </summary>
         /// <returns></returns>
         [Route("api/Idea/GetAllIdea")]
-        [HttpPut]
+        [HttpGet]
         public IEnumerable<IdeaForShowDto> GetAllIdea()
         {
             return _business.GetAllIdea();

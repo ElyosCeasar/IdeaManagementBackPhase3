@@ -23,12 +23,12 @@ namespace DataAccess.Query
                     Id =x.ID,
                     Username =x.USERNAME,
                     FullName =x.USER.FIRST_NAME+" "+ x.USER.LAST_NAME,
-                    SaveDate = Persia.Calendar.ConvertToPersian(x.SAVE_DATE).Persian,
+                    SaveDate = Persia.Calendar.ConvertToPersian(x.SAVE_DATE).Simple,
                     Status =x.IDEA_STATUS.TITLE,
                     StatusId =x.STATUS_ID,
                     Title =x.TITLE,
                     TotalPoints = x.IDEA_POINTS.Sum(w => w.POINT)
-                });
+                }).ToList();
 
   
             }
@@ -46,12 +46,13 @@ namespace DataAccess.Query
                     {
                         Id = idea.ID,
                         POINT = idea.IDEA_POINTS.Sum(x => x.POINT),
-                        SAVE_DATE = Persia.Calendar.ConvertToPersian(idea.SAVE_DATE).Persian,
+                        SAVE_DATE = Persia.Calendar.ConvertToPersian(idea.SAVE_DATE).Simple,
                         Status = idea.IDEA_STATUS.TITLE,
                         CurrentSituation = idea.CURRENT_SITUATION,
                         Prerequisite = idea.PREREQUISITE,
                         Advantages = idea.ADVANTAGES,
                         Steps = idea.STEPS,
+                        Title=idea.TITLE,
                         Username = idea.USERNAME,
                         FullName = idea.USER.FIRST_NAME + " " + idea.USER.LAST_NAME,
                         StatusId = idea.STATUS_ID
@@ -113,16 +114,18 @@ namespace DataAccess.Query
                 }
                 else
                 {
-                    if (searchItem.Username != null && searchItem.Username.Trim().Length > 0)
+                    if (searchItem.Username != null  && searchItem.Username.Trim().Length > 0)
                     {
                         ideas = ideas.Where(x => x.TITLE.Contains(searchItem.Username.Trim()));
                     }
-                    if (searchItem.FullName != null && searchItem.FullName.Trim().Length > 0)
+                    if (searchItem.FullName != null  && searchItem.FullName.Trim().Length > 0)
                     {
                         if (searchItem.FullName.Trim().Contains(" "))
                         {
                             var firstName = searchItem.FullName.Trim().Substring(0, searchItem.FullName.Trim().IndexOf(" "));
                             var lastName = searchItem.FullName.Trim().Substring(0, searchItem.FullName.Trim().IndexOf(" "));
+                            ideas = ideas.Where(u => u.USER.FIRST_NAME.Contains(firstName.Trim()) && u.USER.LAST_NAME.Contains(lastName.Trim()));
+
                         }
                         else
                         {
@@ -139,19 +142,23 @@ namespace DataAccess.Query
                 {
                     ideas = ideas.Where(x => x.STATUS_ID==searchItem.StatusId.Value);
                 }
-                _filterYearAndMonth(ideas,searchItem.Year,searchItem.Month);
+                ideas=_filterYearAndMonth(ideas,searchItem.Year,searchItem.Month);
 
-                res = ideas.OrderByDescending(x => x.SAVE_DATE).ToList().Select(x => new IdeaForShowDto() {
-                    Id=x.ID,
-                    FullName=x.USER.FIRST_NAME+" "+x.USER.LAST_NAME,
-                    Title=x.TITLE,
-                    Status=x.IDEA_STATUS.TITLE,
-                    SaveDate= Persia.Calendar.ConvertToPersian(x.SAVE_DATE).Persian,
-                    StatusId=x.STATUS_ID,
-                    Username=x.USERNAME,
-                    TotalPoints = x.IDEA_POINTS.Sum(w => w.POINT)
+                res = ideas.OrderByDescending(x => x.SAVE_DATE).Select(x => new IdeaForShowDto() {
+                    Id = x.ID,
+                    FullName = x.USER.FIRST_NAME + " " + x.USER.LAST_NAME,
+                    Title = x.TITLE,
+                    Status = x.IDEA_STATUS.TITLE,
+                    StatusId = x.STATUS_ID,
+                    Username = x.USERNAME,
+                    TotalPoints = x.IDEA_POINTS.Any()? x.IDEA_POINTS.Sum(w => w.POINT):0
 
-                });
+                }).ToList();
+
+                foreach(var row in res)
+                {
+                    row.SaveDate = Persia.Calendar.ConvertToPersian(_db.IDEAS.First(z => z.ID == row.Id).SAVE_DATE).Simple;
+                }
             }
             return res;
         }
@@ -185,18 +192,21 @@ namespace DataAccess.Query
             IEnumerable<IdeaForShowDto> res = null;
             using (_db = new IdeaManagmentDatabaseEntities())
             {
-                res = _db.IDEAS.Where(x=>x.STATUS_ID==0).OrderByDescending(x => x.SAVE_DATE).ToList().Select(x => new IdeaForShowDto()
+                res = _db.IDEAS.Where(x=>x.STATUS_ID==0).OrderByDescending(x => x.SAVE_DATE).Select(x => new IdeaForShowDto()
                 {
                     Id = x.ID,
                     Username = x.USERNAME,
                     FullName = x.USER.FIRST_NAME + " " + x.USER.LAST_NAME,
-                    SaveDate = Persia.Calendar.ConvertToPersian(x.SAVE_DATE).Persian,
+
                     Status = x.IDEA_STATUS.TITLE,
                     StatusId = x.STATUS_ID,
                     Title = x.TITLE,
-                    TotalPoints = x.IDEA_POINTS.Sum(w => w.POINT)
-                });
-
+                    TotalPoints = x.IDEA_POINTS.Any()? x.IDEA_POINTS.Sum(w => w.POINT):0
+                }).ToList();
+                foreach(var row in res)
+                {
+                    row.SaveDate = Persia.Calendar.ConvertToPersian(_db.IDEAS.First(x => x.ID == row.Id).SAVE_DATE).Simple;
+                }
 
             }
             return res;
@@ -208,22 +218,24 @@ namespace DataAccess.Query
             IEnumerable<IdeaForShowDto> res = null;
             using (_db = new IdeaManagmentDatabaseEntities())
             {
-                IQueryable<IDEA> temp = _db.IDEAS;
+                IQueryable<IDEA> temp = _db.IDEAS.Where(x=>x.STATUS_ID>0);
                 var datePersion = Persia.Calendar.ConvertToPersian(DateTime.Now);
-                _filterYearAndMonth(temp, datePersion.ArrayType[0], datePersion.ArrayType[1]);
-                res = temp.OrderByDescending(x => x.SAVE_DATE).ToList().Select(x => new IdeaForShowDto()
+                temp=_filterYearAndMonth(temp, datePersion.ArrayType[0], datePersion.ArrayType[1]);
+                res = temp.OrderByDescending(x => x.COMMITTEE_VOTE_DETAIL.SAVE_DATE).Select(x => new IdeaForShowDto()
                 {
                     Id = x.ID,
                     Username = x.USERNAME,
                     FullName = x.USER.FIRST_NAME + " " + x.USER.LAST_NAME,
-                    SaveDate = Persia.Calendar.ConvertToPersian(x.SAVE_DATE).Persian,
                     Status = x.IDEA_STATUS.TITLE,
                     StatusId = x.STATUS_ID,
                     Title = x.TITLE,
-                    TotalPoints = x.IDEA_POINTS.Sum(w => w.POINT)
-                });
+                    TotalPoints = x.IDEA_POINTS.Any()? x.IDEA_POINTS.Sum(w => w.POINT):0
+                }).ToList(); 
 
-
+                foreach (var row in res)
+                {
+                    row.SaveDate = Persia.Calendar.ConvertToPersian(_db.IDEAS.First(x => x.ID == row.Id).SAVE_DATE).Simple;
+                }
             }
             return res;
         }
@@ -235,19 +247,22 @@ namespace DataAccess.Query
             using (_db = new IdeaManagmentDatabaseEntities())
             {
                 IQueryable<IDEA> temp = _db.IDEAS;
-                _filterYearAndMonth(temp, searchItem.Year, searchItem.Month);
-                res = temp.OrderByDescending(x => x.SAVE_DATE).ToList().Select(x => new IdeaForShowDto()
+                temp=_filterYearAndMonth(temp, searchItem.Year, searchItem.Month);
+                res = temp.OrderByDescending(x => x.SAVE_DATE).Select(x => new IdeaForShowDto()
                 {
                     Id = x.ID,
                     Username = x.USERNAME,
                     FullName = x.USER.FIRST_NAME + " " + x.USER.LAST_NAME,
-                    SaveDate = Persia.Calendar.ConvertToPersian(x.SAVE_DATE).Persian,
+             
                     Status = x.IDEA_STATUS.TITLE,
                     StatusId = x.STATUS_ID,
                     Title = x.TITLE,
-                    TotalPoints = x.IDEA_POINTS.Sum(w => w.POINT)
-                });
-
+                    TotalPoints = x.IDEA_POINTS.Any()? x.IDEA_POINTS.Sum(w => w.POINT):0
+                }).ToList();
+                foreach (var row in res)
+                {
+                    row.SaveDate = Persia.Calendar.ConvertToPersian(_db.IDEAS.First(x => x.ID == row.Id).SAVE_DATE).Simple;
+                }
 
             }
             return res;
@@ -275,7 +290,7 @@ namespace DataAccess.Query
                     FullName = s.IDEA.USER.FIRST_NAME + " " + s.IDEA.USER.LAST_NAME,
                     Username = s.IDEA.USERNAME,
                     AcceptDate = s.YEAR + "/" + s.MONTH + "/" + 1,
-                    SaveDate = Persia.Calendar.ConvertToPersian(s.IDEA.SAVE_DATE).Persian,
+                    SaveDate = Persia.Calendar.ConvertToPersian(s.IDEA.SAVE_DATE).Simple,
                     TotalPoints = s.IDEA.IDEA_POINTS.Sum(x => x.POINT)
                 });
             }
@@ -294,7 +309,7 @@ namespace DataAccess.Query
                     FullName=s.IDEA.USER.FIRST_NAME+" "+s.IDEA.USER.LAST_NAME,
                     Username=s.IDEA.USERNAME,
                     AcceptDate =s.YEAR+"/"+s.MONTH+"/"+1,
-                    SaveDate= Persia.Calendar.ConvertToPersian(s.IDEA.SAVE_DATE).Persian,
+                    SaveDate= Persia.Calendar.ConvertToPersian(s.IDEA.SAVE_DATE).Simple,
                     TotalPoints = s.IDEA.IDEA_POINTS.Sum(x => x.POINT)
                 });
             }
@@ -409,7 +424,7 @@ namespace DataAccess.Query
                         FullName = idea.USER.FIRST_NAME+" "+idea.USER.LAST_NAME,
                         Username = idea.USERNAME,
                         Status = idea.IDEA_STATUS.TITLE,
-                        SaveDate = Persia.Calendar.ConvertToPersian(idea.SAVE_DATE).Persian
+                        SaveDate = Persia.Calendar.ConvertToPersian(idea.SAVE_DATE).Simple
                     });
                 }
                 
@@ -463,7 +478,7 @@ namespace DataAccess.Query
                         FullName = idea.USER.FIRST_NAME+" "+idea.USER.LAST_NAME,
                         Username = idea.USERNAME,
                         Status = idea.IDEA_STATUS.TITLE,
-                        SaveDate = Persia.Calendar.ConvertToPersian(idea.SAVE_DATE).Persian
+                        SaveDate = Persia.Calendar.ConvertToPersian(idea.SAVE_DATE).Simple
                     });
                 }
 
@@ -505,7 +520,7 @@ namespace DataAccess.Query
                         FullName = idea.USER.FIRST_NAME + " " + idea.USER.LAST_NAME,
                         Username = idea.USERNAME,
                         Status = idea.IDEA_STATUS.TITLE,
-                        SaveDate = Persia.Calendar.ConvertToPersian(idea.SAVE_DATE).Persian
+                        SaveDate = Persia.Calendar.ConvertToPersian(idea.SAVE_DATE).Simple
                     });
                 }
 
@@ -532,75 +547,98 @@ namespace DataAccess.Query
         }
         //----------------------------------------------------------------------------------------------------------
 
-        private void _filterYearAndMonth(IQueryable<IDEA> ideas,int? year,int? month)
+        private IQueryable<IDEA> _filterYearAndMonth(IQueryable<IDEA> ideas,int? yearP,int? monthP)
         {
-            if (year.HasValue == false && month.HasValue == false)
+            if (yearP.HasValue == false && monthP.HasValue == false)
             {
-                return;//no change requires
+                return ideas;//no change requires
             }
-            if (year.HasValue)
+            if (yearP.HasValue)
             {
 
                var startDay =new DateTime(
-                    Persia.Calendar.ConvertToGregorian(year.Value, 1, 1, Persia.DateType.Persian).Year,
-                    Persia.Calendar.ConvertToGregorian(year.Value, 1, 1, Persia.DateType.Persian).Month,
-                    Persia.Calendar.ConvertToGregorian(year.Value, 1, 1, Persia.DateType.Persian).Day,
+                    Persia.Calendar.ConvertToGregorian(yearP.Value, 1, 1, Persia.DateType.Persian).Year,
+                    Persia.Calendar.ConvertToGregorian(yearP.Value, 1, 1, Persia.DateType.Persian).Month,
+                    Persia.Calendar.ConvertToGregorian(yearP.Value, 1, 1, Persia.DateType.Persian).Day,
                     0,
                     0,
                     0);
                var endDay = new DateTime(
-                    Persia.Calendar.ConvertToGregorian(year.Value, 12, 29, Persia.DateType.Persian).Year,
-                     Persia.Calendar.ConvertToGregorian(year.Value, 12, 29, Persia.DateType.Persian).Month,
-                     Persia.Calendar.ConvertToGregorian(year.Value, 12, 29, Persia.DateType.Persian).Day,
+                    Persia.Calendar.ConvertToGregorian(yearP.Value, 12, 29, Persia.DateType. Persian).Year,
+                     Persia.Calendar.ConvertToGregorian(yearP.Value, 12, 29, Persia.DateType.Persian).Month,
+                     Persia.Calendar.ConvertToGregorian(yearP.Value, 12, 29, Persia.DateType.Persian).Day,
                     23,
                     59,
                     59); 
                 ideas = ideas.Where(x => x.SAVE_DATE >= startDay && x.SAVE_DATE <= endDay);
             }
 
-            if (month.HasValue)
+            if (monthP.HasValue)
             {
-                var startDay = new DateTime(
-                  2020,
-                   Persia.Calendar.ConvertToGregorian(1398, month.Value, 1, Persia.DateType.Persian).Month,
-                   Persia.Calendar.ConvertToGregorian(1398, month.Value,1, Persia.DateType.Persian).Day,
+                var yearPersionNow = Persia.Calendar.ConvertToPersian(DateTime.Now).ArrayType[0];
+                IQueryable<IDEA> ideasRes = ideas.Where(x => 1 == 2);//need null IquryAble
+                for (int i=1396;i<=yearPersionNow+1;i++)//1396 start software from
+                {
+                    IQueryable<IDEA> ideasTemp;
+                    //if (monthP.Value != 10)//دی استثنا هست چون قسمت دوم از قسمت اول کوچک تر می شه
+                    //{
+                        var startDay = new DateTime(
+                  Persia.Calendar.ConvertToGregorian(i, monthP.Value, 1, Persia.DateType.Persian).Year,
+                   Persia.Calendar.ConvertToGregorian(i, monthP.Value, 1, Persia.DateType.Persian).Month,
+                   Persia.Calendar.ConvertToGregorian(i, monthP.Value, 1, Persia.DateType.Persian).Day,
                    0,
                    0,
                    0);
                 int dayCountsInMonth;
-                if (month.Value <= 6)
+                if (monthP.Value <= 6)
                 {
                     dayCountsInMonth = 31;
                 }
                 else
                 {
-                    dayCountsInMonth = month.Value!=12?30:29;
+                    dayCountsInMonth = monthP.Value != 12 ? 30 : 29;
                 }
 
                 var endDay = new DateTime(
-                     2020,
-                     Persia.Calendar.ConvertToGregorian(1398, month.Value, dayCountsInMonth, Persia.DateType.Persian).Month,
-                     Persia.Calendar.ConvertToGregorian(1398, month.Value, dayCountsInMonth, Persia.DateType.Persian).Day,
+                     Persia.Calendar.ConvertToGregorian(i, monthP.Value, dayCountsInMonth, Persia.DateType.Persian).Year,
+                     Persia.Calendar.ConvertToGregorian(i, monthP.Value, dayCountsInMonth, Persia.DateType.Persian).Month,
+                     Persia.Calendar.ConvertToGregorian(i, monthP.Value, dayCountsInMonth, Persia.DateType.Persian).Day,
                      23,
                      59,
                      59);
-                if (month.Value != 9)//دی استثنا هست چون قسمت دوم از قسمت اول کوچک تر می شه
-                {
-                    ideas = ideas.Where(x =>
-                      x.SAVE_DATE.DayOfYear >= startDay.DayOfYear && x.SAVE_DATE.DayOfYear <= endDay.DayOfYear
+
+          
+                    ideasTemp = ideas.Where(x =>
+                      x.SAVE_DATE >= startDay && x.SAVE_DATE <= endDay
                     );
-                }
-                else
-                {
-                    var part1 = ideas.Where(x =>
-                       x.SAVE_DATE.Month == 12 && x.SAVE_DATE.Day>= 22&& x.SAVE_DATE.Day <= 31
-                    );
-                    var part2 = ideas.Where(x =>
-   x.SAVE_DATE.Month == 1 && x.SAVE_DATE.Day >= 1 && x.SAVE_DATE.Day <= 20
-);
-                    ideas = part1.Concat(part2);
-                }
+             //   }
+             //   else
+             //   {
+             //           var startDay = new DateTime(
+             //   Persia.Calendar.ConvertToGregorian(i,  10, 1, Persia.DateType.Persian).Year,
+             //    Persia.Calendar.ConvertToGregorian(i, 10, 1, Persia.DateType.Persian).Month,
+             //    Persia.Calendar.ConvertToGregorian(i, 10, 1, Persia.DateType.Persian).Day,
+             //    0,
+             //    0,
+             //    0);
+             //           var endDay = new DateTime(
+             //Persia.Calendar.ConvertToGregorian(i, 10, 30, Persia.DateType.Persian).Year,
+             //Persia.Calendar.ConvertToGregorian(i, 10, 30, Persia.DateType.Persian).Month,
+             //Persia.Calendar.ConvertToGregorian(i, 10, 30, Persia.DateType.Persian).Day,
+             //23,
+             //59,
+             //59);
+
+             //           ideasTemp = ideas.Where(x =>
+             //             x.SAVE_DATE >= startDay && x.SAVE_DATE <= endDay
+             //           );
+
+             //       }
+                    ideasRes= ideasRes.Concat(ideasTemp);
             }
+                ideas = ideasRes;
+            }
+            return ideas;
         }
 
         //----------------------------------------------------------------------------------------------------------

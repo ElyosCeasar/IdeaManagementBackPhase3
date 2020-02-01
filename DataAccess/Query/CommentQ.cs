@@ -26,12 +26,15 @@ namespace DataAccess.Query
                     Id = x.ID,
                     IdeaId =x.IDEA_ID,
                     Comment =x.COMMENT,
-                    Points = _db.COMMENT_POINTS.Where(p => p.COMMENT_ID == x.ID).Sum(z=>z.POINT),
-                    SaveDate = Persia.Calendar.ConvertToPersian(x.SAVE_DATE).Persian,
+                    Points = _db.COMMENT_POINTS.Where(p => p.COMMENT_ID == x.ID).Any()? _db.COMMENT_POINTS.Where(p => p.COMMENT_ID == x.ID).Sum(z=>z.POINT):0,
+                   
                     Username =x.USERNAME, 
                     FullName =x.USER.FIRST_NAME+" "+x.USER.LAST_NAME
 
                 }).OrderBy(c=>c.Points).ToList();
+                foreach(var row in res) {
+                    row.SaveDate = Persia.Calendar.ConvertToPersian(_db.IDEA_COMMENTS.First(x => x.ID == row.Id).SAVE_DATE).Simple;
+                }
             }
             return res;
         }

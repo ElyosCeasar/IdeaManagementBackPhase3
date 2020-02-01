@@ -13,6 +13,7 @@ namespace DataTransferObject.Idea
         public string FullName { get; set; }
         public byte StatusId { get; set; }
         public string Status { get; set; }
+        public string Title { get; set; }
         public string CurrentSituation { get; set; }
         public string Prerequisite { get; set; }
         public string Steps { get; set; }
