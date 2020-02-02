@@ -56,34 +56,34 @@ namespace DataAccess.Query
         public IEnumerable<UserShowingTop10Dto> GetTop10IdeaMaker()
         {
             IEnumerable<UserShowingTop10Dto> res=null;
+      
+
             using (_db = new IdeaManagmentDatabaseEntities())
             {
-                Dictionary<string, int> userScrs = new Dictionary<string, int>();
-                var idea_points = _db.IDEA_POINTS.GroupBy(x => x.IDEA_ID).Select(y => new
+                var resTemp = new List<UserShowingTop10Dto>();
+                var users = _db.USERS;
+                foreach (var u in users)
                 {
-                    IDEA_ID = y.Key,
-                    TOTAL_POINT = y.Sum(x => x.POINT)
-                });
-                var AllUsers= _db.USERS;
-                foreach(var u in AllUsers)
-                {
-                   var userAllIdeasId= u.IDEAS.Select(x=>x.ID);
-                    int scr = 0;
-                    foreach(var i in userAllIdeasId)
+                    var AllOfIdeasForSpeceficUser = _db.IDEAS.Where(x => x.USERNAME == u.USERNAME);
+                    if (AllOfIdeasForSpeceficUser.Any())
                     {
-                        scr += idea_points.Single(x => x.IDEA_ID == i).TOTAL_POINT;
+                        int sumOfIdeaPoints = 0;
+                        foreach (var idea in AllOfIdeasForSpeceficUser)
+                        {
+                            sumOfIdeaPoints += _db.IDEA_POINTS.Any(x => x.IDEA_ID == idea.ID) ? _db.IDEA_POINTS.Where(x => x.IDEA_ID == idea.ID).Sum(p => p.POINT) : 0;
+                        }
+                        resTemp.Add(new UserShowingTop10Dto()
+                        {
+                            Count = AllOfIdeasForSpeceficUser.Count(),
+                            FullName = u.FIRST_NAME + " " + u.LAST_NAME,
+                            PointsCount = sumOfIdeaPoints,
+                            UserName = u.USERNAME
+                        });
                     }
-                    userScrs.Add(u.USERNAME, scr);
                 }
-
-                res = userScrs.ToList().OrderByDescending(x => x.Value).Take(10).Select(u => new UserShowingTop10Dto() {
-                    Count= _db.IDEAS.Count(),
-                    UserName=u.Key,
-                    FullName=_db.USERS.Single(x=>x.USERNAME==u.Key).FIRST_NAME+" "+ _db.USERS.Single(x => x.USERNAME == u.Key).LAST_NAME,
-                    PointsCount= u.Value,
-                });
+                res = resTemp.OrderByDescending(x => x.PointsCount).Take(10).ToList();
             }
-           return res;
+            return res;
          }
         //-------------------------------------------------------------------------------------------------
 
@@ -149,31 +149,27 @@ namespace DataAccess.Query
             IEnumerable<UserShowingTop10Dto> res = null;
             using (_db = new IdeaManagmentDatabaseEntities())
             {
-                Dictionary<string, int> userScrs = new Dictionary<string, int>();
-                var commentPoints = _db.COMMENT_POINTS.GroupBy(x => x.COMMENT_ID).Select(y => new
+                var resTemp=new List<UserShowingTop10Dto>();
+                var users= _db.USERS;
+                foreach(var u in users)
                 {
-                    comment_ID = y.Key,
-                    TOTAL_POINT = y.Sum(x => x.POINT)
-                });
-                var AllUsers = _db.USERS;
-                foreach (var u in AllUsers)
-                {
-                    var userAllCommentsId = u.IDEA_COMMENTS.Select(x => x.ID);
-                    int scr = 0;
-                    foreach (var i in userAllCommentsId)
-                    {
-                        scr += commentPoints.Single(x => x.comment_ID == i).TOTAL_POINT;
+                    var AllOfCommentsForSpeceficUser = _db.IDEA_COMMENTS.Where(x => x.USERNAME == u.USERNAME);
+                    if (AllOfCommentsForSpeceficUser.Any()) { 
+                        int sumOfCommentsPoints = 0;
+                foreach(var comment in AllOfCommentsForSpeceficUser)
+                        {
+                            sumOfCommentsPoints += _db.COMMENT_POINTS.Any(x => x.COMMENT_ID == comment.ID) ? _db.COMMENT_POINTS.Where(x => x.COMMENT_ID == comment.ID).Sum(p => p.POINT) : 0;
+                        }
+                        resTemp.Add(new UserShowingTop10Dto()
+                        {
+                            Count=AllOfCommentsForSpeceficUser.Count(),
+                            FullName=u.FIRST_NAME+" "+u.LAST_NAME,
+                            PointsCount=sumOfCommentsPoints,
+                            UserName=u.USERNAME
+                        });
                     }
-                    userScrs.Add(u.USERNAME, scr);
                 }
-
-                res = userScrs.ToList().OrderByDescending(x => x.Value).Take(10).Select(u => new UserShowingTop10Dto()
-                {
-                    Count = _db.IDEA_COMMENTS.Count(),
-                    UserName = u.Key,
-                    FullName = _db.USERS.Single(x => x.USERNAME == u.Key).FIRST_NAME + " " + _db.USERS.Single(x => x.USERNAME == u.Key).LAST_NAME,
-                    PointsCount = u.Value,
-                });
+                res = resTemp.OrderByDescending(x => x.PointsCount).Take(10).ToList();
             }
             return res;
         }

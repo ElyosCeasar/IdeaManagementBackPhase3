@@ -31,7 +31,7 @@ namespace DataAccess.Query
                     Username =x.USERNAME, 
                     FullName =x.USER.FIRST_NAME+" "+x.USER.LAST_NAME
 
-                }).OrderBy(c=>c.Points).ToList();
+                }).OrderByDescending(c=>c.Points).ToList();
                 foreach(var row in res) {
                     row.SaveDate = Persia.Calendar.ConvertToPersian(_db.IDEA_COMMENTS.First(x => x.ID == row.Id).SAVE_DATE).Simple;
                 }

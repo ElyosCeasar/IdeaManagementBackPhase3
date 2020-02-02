@@ -17,10 +17,12 @@ namespace IdeaManagement.Controllers
         //see hear for status code https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
         //or https://fa.wikipedia.org/wiki/%D9%81%D9%87%D8%B1%D8%B3%D8%AA_%DA%A9%D8%AF%D9%87%D8%A7%DB%8C_%D9%88%D8%B6%D8%B9%DB%8C%D8%AA_HTTP
         private readonly Business.Auth _business;
+        private readonly Business.User _businessUser;
         //-------------------------------------------------------------------------------------------------
         public AuthController()
         {
             _business = new Business.Auth();
+            _businessUser = new Business.User();
         }
         //-------------------------------------------------------------------------------------------------
 
@@ -47,7 +49,7 @@ namespace IdeaManagement.Controllers
             Result res = _business.Login(user);
             if (res.Value )
             return Request.CreateResponse(HttpStatusCode.OK,
-                 TokenManager.GenerateToken(user.Username));
+                 TokenManager.GenerateToken(user.Username,_businessUser.IsAdmin(user.Username),_businessUser.IsCommitteMember(user.Username)));
             else
                 return Request.CreateResponse(HttpStatusCode.PreconditionFailed,
      res.Content);

@@ -9,7 +9,7 @@ namespace IdeaManagement.Helper.Token
     {
         //   string key = Convert.ToBase64String(new HMACSHA256().Key);
         private static string Secret = "XCAP05H6LoKvbRRa/QkqLNMI7cOHguaRyHzyg7n5qEkGjQmtBhz4SzYh4Fqwjyi3KJHlSXKPwVu2+bXr6CtpgQ==";
-        public static string GenerateToken(string username)//username@#+@2
+        public static string GenerateToken(string username,bool isAdmin,bool isCommitteeMember)//username@#+@2
         {
             byte[] key = Convert.FromBase64String(Secret);
             SymmetricSecurityKey securityKey = new SymmetricSecurityKey(key);
@@ -18,13 +18,15 @@ namespace IdeaManagement.Helper.Token
                 Subject = new ClaimsIdentity(new[] {
                       new Claim(ClaimTypes.Name, username)}),
                 Expires = DateTime.UtcNow.AddMinutes(120),
+
                 SigningCredentials = new SigningCredentials(securityKey,
                 SecurityAlgorithms.HmacSha256Signature)
             };
-
+            
             JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
             JwtSecurityToken token = handler.CreateJwtSecurityToken(descriptor);
-
+            token.Payload["isAdmin"] = isAdmin;
+            token.Payload["isCommitteeMember"] = isCommitteeMember;
             //token.Payload["favouriteFood"] = "cheese"; //custom adisyion optional
             return handler.WriteToken(token);
         }
