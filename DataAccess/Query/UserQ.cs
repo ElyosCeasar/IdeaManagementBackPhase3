@@ -123,7 +123,7 @@ namespace DataAccess.Query
                     case 2:
                         users = users.Where(u => u.ADMIN_FLAG == true && u.COMMITTEE_FLAG == false);
 
-                        break;
+                        break; 
                     case 3:
                         users = users.Where(u => u.ADMIN_FLAG == true && u.COMMITTEE_FLAG == true);
                         break;
