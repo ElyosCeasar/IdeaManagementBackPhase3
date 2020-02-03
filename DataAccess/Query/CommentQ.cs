@@ -108,6 +108,41 @@ namespace DataAccess.Query
             return res;
         }
 
+        public Result DeleteComment(int commentId)
+        {
+            Result res = new Result();
+            using (_db = new IdeaManagmentDatabaseEntities())
+            {
+                var comment = _db.IDEA_COMMENTS.FirstOrDefault(x => x.ID == commentId);
+                if (comment != null)
+                {
+                    if (comment.IDEA.STATUS_ID > 0)
+                    {
+                        res.Value = false;
+                        res.Content = "برای ایده بررسی‌شده امکان حذف پیشنهاد وجود ندارد";
+                        return res;
+                    }
+                    var allpoints = _db.COMMENT_POINTS.Where(x => x.COMMENT_ID == commentId);
+                  
+                    if (allpoints != null && allpoints.Count() > 0)
+                    {
+                        _db.COMMENT_POINTS.RemoveRange(allpoints);
+                    }
+                    _db.IDEA_COMMENTS.Remove(comment);
+                    _db.SaveChanges();
+                    res.Value = true;
+                    res.Content = "پیشنهاد مورد نظر حذف شد";
+                }
+                else
+                {
+                    res.Value = false;
+                    res.Content = "پیشنهاد مورد نظر یافت نشد";
+                }
+
+            }
+            return res;
+        }
+
         //-----------------------------------------------------------------------------------------------------------
         public Result UpdateComment(CommentDto newcomment)
         {

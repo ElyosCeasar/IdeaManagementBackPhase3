@@ -164,6 +164,52 @@ namespace DataAccess.Query
         }
         //-------------------------------------------------------------------------------------------------
 
+        public Result DeleteIdea(int ideaId)
+        {
+            Result res = new Result();
+            using (_db = new IdeaManagmentDatabaseEntities())
+            {
+                var idea = _db.IDEAS.FirstOrDefault(x => x.ID == ideaId);
+                    if(idea!=null){
+                    if (idea.STATUS_ID > 0)
+                    {
+                        res.Value = false;
+                        res.Content = "برای ایده بررسی شده امکان حذف وجود ندارد";
+                        return res;
+                    }
+                    var allpoints = _db.IDEA_POINTS.Where(x => x.IDEA_ID == ideaId);
+                    var allcomments = _db.IDEA_COMMENTS.Where(x => x.IDEA_ID == ideaId);
+                    if (allcomments != null && allcomments.Count() > 0)
+                    {
+                        var allcommentsIdes = allcomments.Select(x => x.ID);
+                        var allComentPoints = _db.COMMENT_POINTS.Where(x => allcommentsIdes.Contains(x.COMMENT_ID));
+                        if (allComentPoints != null && allComentPoints.Count() > 0)
+                        {
+                            _db.COMMENT_POINTS.RemoveRange(allComentPoints);
+                        }
+                        _db.IDEA_COMMENTS.RemoveRange(allcomments);
+                    }
+                    if (allpoints != null && allpoints.Count() > 0)
+                    {
+                        _db.IDEA_POINTS.RemoveRange(allpoints);
+                    }
+                    _db.IDEAS.Remove(idea);
+                    _db.SaveChanges();
+                    res.Value = true;
+                    res.Content = "ایده‌ی مورد نظر حذف شد";
+                }
+                else
+                {
+                    res.Value =false;
+                    res.Content ="ایده‌ی مورد نظر یافت نشد";
+                }
+               
+            }
+            return res;
+      }
+
+        //-------------------------------------------------------------------------------------------------
+
         public IEnumerable<int> GetYearsFromOldestIdea() 
         {
             DateTime oldestTime = DateTime.Now;//first intial

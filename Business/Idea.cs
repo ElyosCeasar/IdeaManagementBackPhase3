@@ -118,6 +118,13 @@ namespace Business
         }
         //-------------------------------------------------------------------------------------------------
 
+        public Result DeleteIdea(int ideaId)
+        {
+            return _Repository.DeleteIdea(ideaId);
+        }
+
+        //-------------------------------------------------------------------------------------------------
+
         public IEnumerable<WinnerIdeaForShowDto> GetAllWinnerIdea()
         {
             return _Repository.GetAllWinnerIdea();

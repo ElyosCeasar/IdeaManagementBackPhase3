@@ -77,6 +77,23 @@ namespace IdeaManagement.Controllers
             else
                 return Request.CreateResponse(HttpStatusCode.PreconditionFailed, res.Content);
         }
+
+        //-------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// حذف پیشنهاد
+        ///  چک می کنه اگه کمیته وضعیت ایدش رو تغییر داده بود ردش کرده بود یا قبولش کرده بود دیگه نمی شه حذفش کرد
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/Comments/DeleteComment/{commentId}")]
+        [HttpDelete]
+        public HttpResponseMessage DeleteComment(int commentId)
+        {
+            var res = _business.DeleteComment(commentId);
+            if (res.Value == true)
+                return Request.CreateResponse(HttpStatusCode.OK, res.Content);
+            else
+                return Request.CreateResponse(HttpStatusCode.PreconditionFailed, res.Content);
+        }
         //-------------------------------------------------------------------------------------------------
 
         /// <summary>

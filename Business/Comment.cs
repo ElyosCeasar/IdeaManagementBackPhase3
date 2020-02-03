@@ -87,5 +87,13 @@ namespace Business
             else
                 return _Repository.VoteToComment(vote);
         }
+        //-------------------------------------------------------------------------------------------------
+
+        public Result DeleteComment(int commentId)
+        {
+            return _Repository.DeleteComment(commentId);
+        }
+        //-------------------------------------------------------------------------------------------------
+
     }
 }

@@ -94,6 +94,22 @@ namespace IdeaManagement.Controllers
         }
         //-------------------------------------------------------------------------------------------------
         /// <summary>
+        /// حذف ایده
+        ///  چک می کنه اگه کمیته وضعیتش رو تغییر داده بود ردش کرده بود یا قبولش کرده بود دیگه نمی شه حذفش کرد
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/Idea/DeleteIdea/{Ideaid}")]
+        [HttpDelete]
+        public HttpResponseMessage DeleteIdea(int ideaId)
+        {
+            var res = _business.DeleteIdea(ideaId);
+            if (res.Value == true)
+                return Request.CreateResponse(HttpStatusCode.OK, res.Content);
+            else
+                return Request.CreateResponse(HttpStatusCode.PreconditionFailed, res.Content);
+        }
+        //-------------------------------------------------------------------------------------------------
+        /// <summary>
         ///رای دادن به کامنت البته اول باید سرچ کنه اگر قبلا رای داده بود رایش رو آپدیت کنه
         /// هرکسی نباید به نظر خودش بتونه رای بده
         /// بعد از نظر کمیته راجع به ایده این بخش قفل می شه
