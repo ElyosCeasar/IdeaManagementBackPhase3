@@ -80,7 +80,7 @@ namespace DataAccess.Query
                 else
                 {
                     res.Value = false;
-                    res.Content = "اطلاعات مطابقت ندارد";
+                    res.Content = "عدم وجود یا عدم  مطابقت اطلاعات";
                 }
              }
 

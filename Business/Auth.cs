@@ -30,7 +30,7 @@ namespace Business
             }
             else if (user.Password == null)
             {
-                res = new Result() { Content = "لطفا کلمه ی عبور خود را وارد کنید", Value = false };
+                res = new Result() { Content = "لطفا کلمه‌ی عبور خود را وارد کنید", Value = false };
             }
             else 
             {

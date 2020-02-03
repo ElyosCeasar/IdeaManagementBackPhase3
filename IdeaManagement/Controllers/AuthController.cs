@@ -65,7 +65,7 @@ namespace IdeaManagement.Controllers
                 return Request.CreateResponse(HttpStatusCode.OK,
                      res.Content);
             else
-                return Request.CreateResponse(HttpStatusCode.BadRequest,
+                return Request.CreateResponse(HttpStatusCode.PreconditionFailed,
      res.Content);
         }
         //-------------------------------------------------------------------------------------------------

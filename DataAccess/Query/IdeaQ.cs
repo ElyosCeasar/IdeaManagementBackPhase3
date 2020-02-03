@@ -216,11 +216,14 @@ namespace DataAccess.Query
             int nowShamsiYear = Persia.Calendar.ConvertToPersian(oldestTime).ArrayType[0];
             using (_db = new IdeaManagmentDatabaseEntities())
             {
-                var tempOldest = _db.IDEAS.Min(x=>x.SAVE_DATE);
-                if (tempOldest != null)
-                {
-                    oldestTime = tempOldest;
+                if (_db.IDEAS.Count() > 0) { 
+                    var tempOldest = _db.IDEAS.Min(x => x.SAVE_DATE);
+                    if (tempOldest != null)
+                    {
+                        oldestTime = tempOldest;
+                    }
                 }
+  
             }
             int smallestShamsiYear = Persia.Calendar.ConvertToPersian(oldestTime).ArrayType[0];
             List<int> years = new List<int>();
@@ -330,15 +333,21 @@ namespace DataAccess.Query
                     selectedIdeas = selectedIdeas.Where(x => x.MONTH == searchItem.Month.Value);
                 }
 
-                return selectedIdeas.OrderByDescending(x => x.YEAR * (x.MONTH > 9 ? 100 : 1000) + x.MONTH).ToList().Select(s => new WinnerIdeaForShowDto()
+                var res= selectedIdeas.OrderByDescending(x => x.YEAR * (x.MONTH > 9 ? 100 : 1000) + x.MONTH).Select(s => new WinnerIdeaForShowDto()
                 {
+                    IdeaId=s.IDEA_ID,
                     TITLE = s.IDEA.TITLE,
                     FullName = s.IDEA.USER.FIRST_NAME + " " + s.IDEA.USER.LAST_NAME,
                     Username = s.IDEA.USERNAME,
                     AcceptDate = s.YEAR + "/" + s.MONTH + "/" + 1,
-                    SaveDate = Persia.Calendar.ConvertToPersian(s.IDEA.SAVE_DATE).Simple,
+                    //SaveDate = Persia.Calendar.ConvertToPersian(s.IDEA.SAVE_DATE).Simple,
                     TotalPoints = s.IDEA.IDEA_POINTS.Sum(x => x.POINT)
-                });
+                }).ToList();
+                foreach(var row in res)
+                {
+                    row.SaveDate = Persia.Calendar.ConvertToPersian(_db.SELECTED_IDEA.First(x => x.IDEA_ID == row.IdeaId).IDEA.SAVE_DATE).Simple;
+                }
+                return res;
             }
         }
 
@@ -349,15 +358,21 @@ namespace DataAccess.Query
             using (_db = new IdeaManagmentDatabaseEntities())
             {
 
-                return _db.SELECTED_IDEA.OrderByDescending(x=>x.YEAR*(x.MONTH>9? 100:1000)+x.MONTH).ToList().Select(s => new WinnerIdeaForShowDto()
+                var res =  _db.SELECTED_IDEA.OrderByDescending(x=>x.YEAR*(x.MONTH>9? 100:1000)+x.MONTH).Select(s => new WinnerIdeaForShowDto()
                 {   
+                    IdeaId=s.IDEA_ID,
                     TITLE=s.IDEA.TITLE,
                     FullName=s.IDEA.USER.FIRST_NAME+" "+s.IDEA.USER.LAST_NAME,
                     Username=s.IDEA.USERNAME,
                     AcceptDate =s.YEAR+"/"+s.MONTH+"/"+1,
-                    SaveDate= Persia.Calendar.ConvertToPersian(s.IDEA.SAVE_DATE).Simple,
+                    //SaveDate= Persia.Calendar.ConvertToPersian(s.IDEA.SAVE_DATE).Simple,
                     TotalPoints = s.IDEA.IDEA_POINTS.Sum(x => x.POINT)
-                });
+                }).ToList();
+                foreach(var row in res)
+                {
+                    row.SaveDate = Persia.Calendar.ConvertToPersian(_db.SELECTED_IDEA.First(x=>x.IDEA_ID==row.IdeaId).IDEA.SAVE_DATE).Simple;
+                }
+                return res;
             }
         }
 
