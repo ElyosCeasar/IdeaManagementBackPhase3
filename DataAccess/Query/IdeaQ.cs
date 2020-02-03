@@ -116,20 +116,20 @@ namespace DataAccess.Query
                 {
                     if (searchItem.Username != null  && searchItem.Username.Trim().Length > 0)
                     {
-                        ideas = ideas.Where(x => x.TITLE.Contains(searchItem.Username.Trim()));
+                        ideas = ideas.Where(x => x.USERNAME.Contains(searchItem.Username.Trim()));
                     }
                     if (searchItem.FullName != null  && searchItem.FullName.Trim().Length > 0)
                     {
                         if (searchItem.FullName.Trim().Contains(" "))
                         {
                             var firstName = searchItem.FullName.Trim().Substring(0, searchItem.FullName.Trim().IndexOf(" "));
-                            var lastName = searchItem.FullName.Trim().Substring(0, searchItem.FullName.Trim().IndexOf(" "));
+                            var lastName = searchItem.FullName.Trim().Substring( searchItem.FullName.Trim().IndexOf(" ")+1);
                             ideas = ideas.Where(u => u.USER.FIRST_NAME.Contains(firstName.Trim()) && u.USER.LAST_NAME.Contains(lastName.Trim()));
 
                         }
                         else
                         {
-                            ideas = ideas.Where(u => u.USER.FIRST_NAME.Contains(searchItem.Username.Trim()) || u.USER.LAST_NAME.Contains(searchItem.Username.Trim()));
+                            ideas = ideas.Where(u => u.USER.FIRST_NAME.Contains(searchItem.FullName.Trim()) || u.USER.LAST_NAME.Contains(searchItem.FullName.Trim()));
                         }
 
                     }
@@ -295,7 +295,7 @@ namespace DataAccess.Query
             IEnumerable<IdeaForShowDto> res = null;
             using (_db = new IdeaManagmentDatabaseEntities())
             {
-                IQueryable<IDEA> temp = _db.IDEAS;
+                IQueryable<IDEA> temp = _db.IDEAS.Where(x => x.STATUS_ID == 0);
                 temp=_filterYearAndMonth(temp, searchItem.Year, searchItem.Month);
                 res = temp.OrderByDescending(x => x.SAVE_DATE).Select(x => new IdeaForShowDto()
                 {
@@ -333,7 +333,7 @@ namespace DataAccess.Query
                     selectedIdeas = selectedIdeas.Where(x => x.MONTH == searchItem.Month.Value);
                 }
 
-                var res= selectedIdeas.OrderByDescending(x => x.YEAR * (x.MONTH > 9 ? 100 : 1000) + x.MONTH).Select(s => new WinnerIdeaForShowDto()
+                var res= selectedIdeas.OrderByDescending(x => x.YEAR * ( 1000) + x.MONTH).Select(s => new WinnerIdeaForShowDto()
                 {
                     IdeaId=s.IDEA_ID,
                     TITLE = s.IDEA.TITLE,
@@ -358,7 +358,7 @@ namespace DataAccess.Query
             using (_db = new IdeaManagmentDatabaseEntities())
             {
 
-                var res =  _db.SELECTED_IDEA.OrderByDescending(x=>x.YEAR*(x.MONTH>9? 100:1000)+x.MONTH).Select(s => new WinnerIdeaForShowDto()
+                var res =  _db.SELECTED_IDEA.OrderByDescending(x=>x.YEAR*(1000)+x.MONTH).Select(s => new WinnerIdeaForShowDto()
                 {   
                     IdeaId=s.IDEA_ID,
                     TITLE=s.IDEA.TITLE,

@@ -102,7 +102,7 @@ namespace DataAccess.Query
                     if (searchItem.FullName.Trim().Contains(" "))
                     {
                         var firstName = searchItem.FullName.Trim().Substring(0, searchItem.FullName.Trim().IndexOf(" "));
-                        var lastName = searchItem.FullName.Trim().Substring(0, searchItem.FullName.Trim().IndexOf(" "));
+                        var lastName = searchItem.FullName.Trim().Substring(searchItem.FullName.Trim().IndexOf(" ")+1);
                         users = users.Where(u => u.FIRST_NAME.Contains(firstName.Trim()) && u.LAST_NAME.Contains(lastName.Trim()));
                     }
                     else
@@ -125,6 +125,8 @@ namespace DataAccess.Query
 
                         break;
                     case 3:
+                        users = users.Where(u => u.ADMIN_FLAG == true && u.COMMITTEE_FLAG == true);
+                        break;
                     default:
                         break;
 
